@@ -165,6 +165,16 @@ export const getArtisansByCategory = (category) => {
 
 // Function to calculate distance between two coordinates (Haversine formula)
 export const calculateDistance = (lat1, lon1, lat2, lon2) => {
+  // Validate input parameters
+  if (lat1 < -90 || lat1 > 90 || lat2 < -90 || lat2 > 90) {
+    console.error('Invalid latitude value. Must be between -90 and 90.');
+    return 0;
+  }
+  if (lon1 < -180 || lon1 > 180 || lon2 < -180 || lon2 > 180) {
+    console.error('Invalid longitude value. Must be between -180 and 180.');
+    return 0;
+  }
+  
   const R = 6371; // Radius of the Earth in km
   const dLat = (lat2 - lat1) * Math.PI / 180;
   const dLon = (lon2 - lon1) * Math.PI / 180;

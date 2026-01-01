@@ -41,7 +41,10 @@ export default function ArtisanListScreen({ route, navigation }) {
       }
 
       // Get current location
-      let currentLocation = await Location.getCurrentPositionAsync({});
+      let currentLocation = await Location.getCurrentPositionAsync({
+        accuracy: Location.Accuracy.Balanced,
+        timeout: 10000,
+      });
       const userLocation = {
         latitude: currentLocation.coords.latitude,
         longitude: currentLocation.coords.longitude,

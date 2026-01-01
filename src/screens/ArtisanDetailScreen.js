@@ -115,7 +115,6 @@ export default function ArtisanDetailScreen({ route }) {
           <TouchableOpacity
             style={[styles.actionButton, styles.callButton]}
             onPress={handleCallArtisan}
-            disabled={!artisan.available}
           >
             <Text style={styles.actionButtonText}>📞 Call Now</Text>
           </TouchableOpacity>

@@ -35,8 +35,10 @@ export default function ArtisanRegistrationScreen({ navigation }) {
       return;
     }
 
-    if (formData.phone.length < 10) {
-      Alert.alert('Invalid Phone', 'Please enter a valid phone number');
+    // Validate Ghanaian phone number format
+    const phoneRegex = /^(\+233|0)[0-9]{9}$/;
+    if (!phoneRegex.test(formData.phone.replace(/\s/g, ''))) {
+      Alert.alert('Invalid Phone', 'Please enter a valid Ghanaian phone number (e.g., +233244123456 or 0244123456)');
       return;
     }
 
