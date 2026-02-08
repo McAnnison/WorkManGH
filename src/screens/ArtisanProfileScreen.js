@@ -83,7 +83,7 @@ export default function ArtisanProfileScreen({ navigation }) {
             <Switch
               value={artisan.available}
               onValueChange={toggleAvailability}
-              trackColor={{ false: '#767577', true: '#4ECDC4' }}
+              trackColor={{ false: '#9AA6B2', true: '#0B3A6A' }}
               thumbColor={artisan.available ? '#FFF' : '#f4f3f4'}
             />
           </View>
@@ -179,7 +179,7 @@ export default function ArtisanProfileScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F5F5F5',
+    backgroundColor: '#EEF2F8',
   },
   content: {
     padding: 20,
@@ -200,7 +200,7 @@ const styles = StyleSheet.create({
     width: 100,
     height: 100,
     borderRadius: 50,
-    backgroundColor: '#FF6B35',
+    backgroundColor: '#0B3A6A',
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 16,
@@ -213,12 +213,12 @@ const styles = StyleSheet.create({
   name: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#333',
+    color: '#0B1F3B',
     marginBottom: 4,
   },
   category: {
     fontSize: 14,
-    color: '#666',
+    color: '#3B4A66',
     marginBottom: 12,
     letterSpacing: 1,
   },
@@ -229,12 +229,12 @@ const styles = StyleSheet.create({
   rating: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#FF6B35',
+    color: '#0F4C81',
     marginRight: 8,
   },
   reviews: {
     fontSize: 14,
-    color: '#666',
+    color: '#3B4A66',
   },
   availabilitySection: {
     backgroundColor: '#FFF',
@@ -256,16 +256,16 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#333',
+    color: '#0B1F3B',
   },
   availabilityText: {
     fontSize: 16,
-    color: '#333',
+    color: '#0B1F3B',
     marginBottom: 8,
   },
   availabilityNote: {
     fontSize: 12,
-    color: '#666',
+    color: '#3B4A66',
     fontStyle: 'italic',
   },
   statsSection: {
@@ -289,12 +289,12 @@ const styles = StyleSheet.create({
   statValue: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#FF6B35',
+    color: '#0B3A6A',
     marginBottom: 4,
   },
   statLabel: {
     fontSize: 12,
-    color: '#666',
+    color: '#3B4A66',
     textAlign: 'center',
   },
   infoSection: {
@@ -321,13 +321,13 @@ const styles = StyleSheet.create({
   },
   infoLabel: {
     fontSize: 12,
-    color: '#666',
+    color: '#3B4A66',
     marginBottom: 4,
   },
   infoValue: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#333',
+    color: '#0B1F3B',
   },
   bioSection: {
     backgroundColor: '#FFF',
@@ -342,7 +342,7 @@ const styles = StyleSheet.create({
   },
   bioText: {
     fontSize: 14,
-    color: '#666',
+    color: '#3B4A66',
     lineHeight: 20,
     marginTop: 8,
   },
@@ -350,7 +350,7 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   actionButton: {
-    backgroundColor: '#FF6B35',
+    backgroundColor: '#0B3A6A',
     borderRadius: 12,
     padding: 16,
     marginBottom: 12,
@@ -367,21 +367,21 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   tipsSection: {
-    backgroundColor: '#FFF9E6',
+    backgroundColor: '#E8F1FF',
     borderRadius: 12,
     padding: 16,
     borderWidth: 1,
-    borderColor: '#FFE5B4',
+    borderColor: '#9DB7E3',
   },
   tipsTitle: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#333',
+    color: '#0B1F3B',
     marginBottom: 12,
   },
   tipText: {
     fontSize: 14,
-    color: '#666',
+    color: '#3B4A66',
     marginBottom: 8,
     lineHeight: 20,
   },

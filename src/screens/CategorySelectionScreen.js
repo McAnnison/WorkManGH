@@ -42,7 +42,7 @@ export default function CategorySelectionScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F5F5F5',
+    backgroundColor: '#EEF2F8',
   },
   content: {
     padding: 20,
@@ -50,12 +50,12 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#333',
+    color: '#0B1F3B',
     marginBottom: 8,
   },
   subtitle: {
     fontSize: 16,
-    color: '#666',
+    color: '#3B4A66',
     marginBottom: 24,
   },
   categoryGrid: {
@@ -83,7 +83,7 @@ const styles = StyleSheet.create({
   categoryName: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#333',
+    color: '#0B1F3B',
     textAlign: 'center',
   },
 });

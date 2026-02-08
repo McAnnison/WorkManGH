@@ -141,7 +141,7 @@ export default function ArtisanDetailScreen({ route }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F5F5F5',
+    backgroundColor: '#EEF2F8',
   },
   content: {
     padding: 20,
@@ -162,7 +162,7 @@ const styles = StyleSheet.create({
     width: 100,
     height: 100,
     borderRadius: 50,
-    backgroundColor: '#FF6B35',
+    backgroundColor: '#0B3A6A',
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 16,
@@ -175,12 +175,12 @@ const styles = StyleSheet.create({
   name: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#333',
+    color: '#0B1F3B',
     marginBottom: 4,
   },
   category: {
     fontSize: 14,
-    color: '#666',
+    color: '#3B4A66',
     marginBottom: 12,
     letterSpacing: 1,
   },
@@ -192,12 +192,12 @@ const styles = StyleSheet.create({
   rating: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#FF6B35',
+    color: '#0F4C81',
     marginRight: 8,
   },
   reviews: {
     fontSize: 14,
-    color: '#666',
+    color: '#3B4A66',
   },
   statusBadge: {
     paddingHorizontal: 16,
@@ -206,15 +206,15 @@ const styles = StyleSheet.create({
     marginTop: 8,
   },
   availableBadge: {
-    backgroundColor: '#E8F8F5',
+    backgroundColor: '#E7F6F2',
   },
   busyBadge: {
-    backgroundColor: '#FADBD8',
+    backgroundColor: '#E8F1FF',
   },
   statusText: {
     fontSize: 14,
     fontWeight: 'bold',
-    color: '#333',
+    color: '#0B1F3B',
   },
   infoSection: {
     marginBottom: 16,
@@ -240,13 +240,13 @@ const styles = StyleSheet.create({
   },
   infoLabel: {
     fontSize: 12,
-    color: '#666',
+    color: '#3B4A66',
     marginBottom: 4,
   },
   infoValue: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#333',
+    color: '#0B1F3B',
   },
   bioSection: {
     backgroundColor: '#FFF',
@@ -262,12 +262,12 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#333',
+    color: '#0B1F3B',
     marginBottom: 12,
   },
   bioText: {
     fontSize: 14,
-    color: '#666',
+    color: '#3B4A66',
     lineHeight: 20,
   },
   portfolioSection: {
@@ -283,7 +283,7 @@ const styles = StyleSheet.create({
   },
   emptyText: {
     fontSize: 14,
-    color: '#999',
+    color: '#6B7C97',
     fontStyle: 'italic',
   },
   portfolioGrid: {
@@ -304,10 +304,10 @@ const styles = StyleSheet.create({
     shadowRadius: 3.84,
   },
   callButton: {
-    backgroundColor: '#4ECDC4',
+    backgroundColor: '#0B3A6A',
   },
   requestButton: {
-    backgroundColor: '#FF6B35',
+    backgroundColor: '#1D4ED8',
   },
   actionButtonText: {
     fontSize: 18,
@@ -317,7 +317,7 @@ const styles = StyleSheet.create({
   },
   unavailableNote: {
     fontSize: 14,
-    color: '#666',
+    color: '#3B4A66',
     textAlign: 'center',
     fontStyle: 'italic',
   },

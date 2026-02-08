@@ -179,7 +179,7 @@ export default function ArtisanRegistrationScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F5F5F5',
+    backgroundColor: '#EEF2F8',
   },
   content: {
     padding: 20,
@@ -187,12 +187,12 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#333',
+    color: '#0B1F3B',
     marginBottom: 8,
   },
   subtitle: {
     fontSize: 16,
-    color: '#666',
+    color: '#3B4A66',
     marginBottom: 24,
   },
   inputGroup: {
@@ -201,7 +201,7 @@ const styles = StyleSheet.create({
   label: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#333',
+    color: '#0B1F3B',
     marginBottom: 8,
   },
   input: {
@@ -210,7 +210,7 @@ const styles = StyleSheet.create({
     padding: 12,
     fontSize: 16,
     borderWidth: 1,
-    borderColor: '#DDD',
+    borderColor: '#CBD5E1',
   },
   textArea: {
     height: 100,
@@ -226,13 +226,13 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     marginRight: 10,
     borderWidth: 2,
-    borderColor: '#DDD',
+    borderColor: '#CBD5E1',
     flexDirection: 'row',
     alignItems: 'center',
   },
   categoryChipSelected: {
-    backgroundColor: '#FF6B35',
-    borderColor: '#FF6B35',
+    backgroundColor: '#0B3A6A',
+    borderColor: '#0B3A6A',
   },
   categoryChipIcon: {
     fontSize: 20,
@@ -241,7 +241,7 @@ const styles = StyleSheet.create({
   categoryChipText: {
     fontSize: 14,
     fontWeight: 'bold',
-    color: '#333',
+    color: '#0B1F3B',
   },
   categoryChipTextSelected: {
     color: '#FFF',
@@ -252,33 +252,33 @@ const styles = StyleSheet.create({
     padding: 16,
     marginBottom: 20,
     borderWidth: 1,
-    borderColor: '#DDD',
+    borderColor: '#B5C7E3',
     borderStyle: 'dashed',
   },
   sectionTitle: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#333',
+    color: '#0B1F3B',
     marginBottom: 4,
   },
   uploadNote: {
     fontSize: 12,
-    color: '#666',
+    color: '#3B4A66',
     fontStyle: 'italic',
     marginBottom: 12,
   },
   uploadButton: {
-    backgroundColor: '#F5F5F5',
+    backgroundColor: '#E8F1FF',
     borderRadius: 8,
     padding: 12,
     alignItems: 'center',
   },
   uploadButtonText: {
     fontSize: 16,
-    color: '#666',
+    color: '#0B3A6A',
   },
   submitButton: {
-    backgroundColor: '#4ECDC4',
+    backgroundColor: '#0B3A6A',
     borderRadius: 12,
     padding: 16,
     alignItems: 'center',
@@ -296,7 +296,7 @@ const styles = StyleSheet.create({
   },
   note: {
     fontSize: 12,
-    color: '#666',
+    color: '#6B7C97',
     textAlign: 'center',
     fontStyle: 'italic',
   },

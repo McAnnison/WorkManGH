@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   View,
   Text,
@@ -7,7 +7,7 @@ import {
   ScrollView,
   SafeAreaView,
   ActivityIndicator,
-  Alert,
+  Animated,
 } from 'react-native';
 import * as Location from 'expo-location';
 import { getNearbyArtisans } from '../data/artisanData';
@@ -17,10 +17,52 @@ export default function ArtisanListScreen({ route, navigation }) {
   const [artisans, setArtisans] = useState([]);
   const [loading, setLoading] = useState(true);
   const [location, setLocation] = useState(null);
+  const [bannerMessage, setBannerMessage] = useState('');
+  const defaultLocation = { latitude: 5.6037, longitude: -0.1870 };
+  const contentAnim = useRef(new Animated.Value(0)).current;
+  const cardAnims = useRef([]);
 
   useEffect(() => {
     loadArtisans();
+    Animated.timing(contentAnim, {
+      toValue: 1,
+      duration: 400,
+      useNativeDriver: true,
+    }).start();
   }, []);
+
+  useEffect(() => {
+    if (!artisans.length) {
+      return;
+    }
+
+    const animations = artisans.map((_, index) => {
+      if (!cardAnims.current[index]) {
+        cardAnims.current[index] = new Animated.Value(0);
+      }
+      cardAnims.current[index].setValue(0);
+      return cardAnims.current[index];
+    });
+
+    Animated.stagger(
+      70,
+      animations.map((anim) =>
+        Animated.timing(anim, {
+          toValue: 1,
+          duration: 320,
+          useNativeDriver: true,
+        })
+      )
+    ).start();
+  }, [artisans]);
+
+  const useDefaultLocation = (message) => {
+    if (message) {
+      setBannerMessage(message);
+    }
+    setLocation(defaultLocation);
+    loadNearbyArtisans(defaultLocation);
+  };
 
   const loadArtisans = async () => {
     try {
@@ -28,15 +70,18 @@ export default function ArtisanListScreen({ route, navigation }) {
       let { status } = await Location.requestForegroundPermissionsAsync();
       
       if (status !== 'granted') {
-        Alert.alert(
-          'Location Permission',
-          'Permission to access location was denied. Showing all artisans without distance sorting.',
-          [{ text: 'OK' }]
-        );
         // Use default location (Accra center)
-        const defaultLocation = { latitude: 5.6037, longitude: -0.1870 };
-        setLocation(defaultLocation);
-        loadNearbyArtisans(defaultLocation);
+        useDefaultLocation(
+          'Location permission was denied. Showing artisans without distance sorting.'
+        );
+        return;
+      }
+
+      const servicesEnabled = await Location.hasServicesEnabledAsync();
+      if (!servicesEnabled) {
+        useDefaultLocation(
+          'Location services are unavailable. Using default location.'
+        );
         return;
       }
 
@@ -51,13 +96,12 @@ export default function ArtisanListScreen({ route, navigation }) {
       };
       
       setLocation(userLocation);
+      setBannerMessage('');
       loadNearbyArtisans(userLocation);
     } catch (error) {
-      console.error('Error loading location:', error);
-      // Use default location
-      const defaultLocation = { latitude: 5.6037, longitude: -0.1870 };
-      setLocation(defaultLocation);
-      loadNearbyArtisans(defaultLocation);
+      const message = error?.message || 'Unable to access current location.';
+      console.warn('Location unavailable:', message);
+      useDefaultLocation(message);
     }
   };
 
@@ -73,7 +117,6 @@ export default function ArtisanListScreen({ route, navigation }) {
 
   const renderArtisan = (artisan) => (
     <TouchableOpacity
-      key={artisan.id}
       style={styles.artisanCard}
       onPress={() => navigation.navigate('ArtisanDetail', { artisan })}
     >
@@ -122,7 +165,7 @@ export default function ArtisanListScreen({ route, navigation }) {
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#FF6B35" />
+        <ActivityIndicator size="large" color="#0B3A6A" />
         <Text style={styles.loadingText}>Finding artisans near you...</Text>
       </View>
     );
@@ -131,25 +174,67 @@ export default function ArtisanListScreen({ route, navigation }) {
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView contentContainerStyle={styles.content}>
-        <Text style={styles.title}>
-          {category.icon} {category.name}s Near You
-        </Text>
-        
-        {artisans.length === 0 ? (
-          <View style={styles.emptyContainer}>
-            <Text style={styles.emptyText}>
-              No {category.name.toLowerCase()}s found in your area
-            </Text>
-          </View>
-        ) : (
-          <View>
-            <Text style={styles.resultCount}>
-              Found {artisans.length} {category.name.toLowerCase()}
-              {artisans.length !== 1 ? 's' : ''}
-            </Text>
-            {artisans.map(renderArtisan)}
-          </View>
-        )}
+        <Animated.View
+          style={[
+            styles.contentInner,
+            {
+              opacity: contentAnim,
+              transform: [
+                {
+                  translateY: contentAnim.interpolate({
+                    inputRange: [0, 1],
+                    outputRange: [12, 0],
+                  }),
+                },
+              ],
+            },
+          ]}
+        >
+          {bannerMessage ? (
+            <View style={styles.banner}>
+              <Text style={styles.bannerText}>{bannerMessage}</Text>
+            </View>
+          ) : null}
+          <Text style={styles.title}>
+            {category.icon} {category.name}s Near You
+          </Text>
+          
+          {artisans.length === 0 ? (
+            <View style={styles.emptyContainer}>
+              <Text style={styles.emptyText}>
+                No {category.name.toLowerCase()}s found in your area
+              </Text>
+            </View>
+          ) : (
+            <View>
+              <Text style={styles.resultCount}>
+                Found {artisans.length} {category.name.toLowerCase()}
+                {artisans.length !== 1 ? 's' : ''}
+              </Text>
+              {artisans.map((artisan, index) => {
+                const anim = cardAnims.current[index] || new Animated.Value(1);
+                return (
+                  <Animated.View
+                    key={artisan.id}
+                    style={{
+                      opacity: anim,
+                      transform: [
+                        {
+                          translateY: anim.interpolate({
+                            inputRange: [0, 1],
+                            outputRange: [10, 0],
+                          }),
+                        },
+                      ],
+                    }}
+                  >
+                    {renderArtisan(artisan)}
+                  </Animated.View>
+                );
+              })}
+            </View>
+          )}
+        </Animated.View>
       </ScrollView>
     </SafeAreaView>
   );
@@ -158,32 +243,49 @@ export default function ArtisanListScreen({ route, navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F5F5F5',
+    backgroundColor: '#EEF2F8',
   },
   content: {
     padding: 20,
+  },
+  contentInner: {
+    flex: 1,
   },
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#F5F5F5',
+    backgroundColor: '#EEF2F8',
   },
   loadingText: {
     marginTop: 12,
     fontSize: 16,
-    color: '#666',
+    color: '#3B4A66',
   },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#333',
+    color: '#0B1F3B',
     marginBottom: 16,
   },
   resultCount: {
     fontSize: 16,
-    color: '#666',
+    color: '#3B4A66',
     marginBottom: 12,
+  },
+  banner: {
+    backgroundColor: '#E8F1FF',
+    borderColor: '#9DB7E3',
+    borderWidth: 1,
+    paddingVertical: 10,
+    paddingHorizontal: 12,
+    borderRadius: 10,
+    marginBottom: 12,
+  },
+  bannerText: {
+    color: '#0B3A6A',
+    fontSize: 13,
+    lineHeight: 18,
   },
   artisanCard: {
     backgroundColor: '#FFF',
@@ -204,7 +306,7 @@ const styles = StyleSheet.create({
     width: 60,
     height: 60,
     borderRadius: 30,
-    backgroundColor: '#FF6B35',
+    backgroundColor: '#0B3A6A',
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 12,
@@ -221,12 +323,12 @@ const styles = StyleSheet.create({
   artisanName: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#333',
+    color: '#0B1F3B',
     marginBottom: 4,
   },
   artisanLocation: {
     fontSize: 14,
-    color: '#666',
+    color: '#3B4A66',
     marginBottom: 4,
   },
   ratingContainer: {
@@ -236,12 +338,12 @@ const styles = StyleSheet.create({
   rating: {
     fontSize: 14,
     fontWeight: 'bold',
-    color: '#FF6B35',
+    color: '#0F4C81',
     marginRight: 6,
   },
   reviews: {
     fontSize: 12,
-    color: '#666',
+    color: '#3B4A66',
   },
   artisanDetails: {
     flexDirection: 'row',
@@ -256,19 +358,19 @@ const styles = StyleSheet.create({
   },
   detailLabel: {
     fontSize: 12,
-    color: '#666',
+    color: '#3B4A66',
     marginBottom: 4,
   },
   detailValue: {
     fontSize: 14,
     fontWeight: 'bold',
-    color: '#333',
+    color: '#0B1F3B',
   },
   available: {
-    color: '#4ECDC4',
+    color: '#1F9D8B',
   },
   busy: {
-    color: '#FF6B35',
+    color: '#1D4ED8',
   },
   emptyContainer: {
     padding: 40,
@@ -276,7 +378,7 @@ const styles = StyleSheet.create({
   },
   emptyText: {
     fontSize: 16,
-    color: '#666',
+    color: '#3B4A66',
     textAlign: 'center',
   },
 });

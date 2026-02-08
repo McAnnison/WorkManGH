@@ -82,7 +82,7 @@ export default function HomeScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F5F5F5',
+    backgroundColor: '#EEF2F8',
   },
   content: {
     padding: 20,
@@ -94,12 +94,12 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 42,
     fontWeight: 'bold',
-    color: '#FF6B35',
+    color: '#0B3A6A',
     marginBottom: 10,
   },
   subtitle: {
     fontSize: 18,
-    color: '#666',
+    color: '#3B4A66',
     textAlign: 'center',
   },
   buttonContainer: {
@@ -116,10 +116,10 @@ const styles = StyleSheet.create({
     shadowRadius: 3.84,
   },
   primaryButton: {
-    backgroundColor: '#FF6B35',
+    backgroundColor: '#0B3A6A',
   },
   secondaryButton: {
-    backgroundColor: '#4ECDC4',
+    backgroundColor: '#1D4ED8',
   },
   buttonText: {
     fontSize: 20,
@@ -138,7 +138,7 @@ const styles = StyleSheet.create({
   infoTitle: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#333',
+    color: '#0B1F3B',
     marginBottom: 15,
   },
   infoCard: {
@@ -156,7 +156,7 @@ const styles = StyleSheet.create({
   infoNumber: {
     fontSize: 32,
     fontWeight: 'bold',
-    color: '#FF6B35',
+    color: '#0B3A6A',
     marginRight: 15,
     width: 40,
   },
@@ -166,11 +166,11 @@ const styles = StyleSheet.create({
   infoHeading: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#333',
+    color: '#0B1F3B',
     marginBottom: 4,
   },
   infoText: {
     fontSize: 14,
-    color: '#666',
+    color: '#3B4A66',
   },
 });
