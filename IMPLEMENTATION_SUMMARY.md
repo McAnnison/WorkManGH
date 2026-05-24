@@ -270,7 +270,16 @@ The following are documented but not implemented:
 6. **Payments**: Not implemented
 7. **Notifications**: Not implemented
 
-These are by design for an MVP/prototype and are documented for future implementation.
+These are by design for an MVP/prototype.
+
+## 🚀 Phase 2: Production Readiness Checklist
+- [ ] **Backend API**: Set up Node.js/Express or Firebase backend.
+- [ ] **Database**: Migrate `artisanData.js` to a real database (PostgreSQL/Prisma).
+- [ ] **Auth**: Implement Clerk, Firebase, or JWT-based authentication.
+- [ ] **Image Storage**: Integrate Cloudinary or AWS S3 for profile/portfolio photos.
+- [ ] **Live Ratings**: Enable users to post star ratings and text reviews.
+- [ ] **Push Notifications**: Notify artisans of new job requests.
+- [ ] **Deployment**: Prepare builds for Google Play Store and Apple App Store.
 
 ## Testing Coverage
 

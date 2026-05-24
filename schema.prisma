@@ -1,0 +1,107 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  CUSTOMER
+  ARTISAN
+  ADMIN
+}
+
+enum JobStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+  COMPLETED
+  CANCELLED
+}
+
+model User {
+  id            String          @id @default(cuid())
+  email         String?         @unique
+  phone         String          @unique // Validated Ghanaian format
+  password      String?         // Hashed
+  name          String
+  role          Role            @default(CUSTOMER)
+  profileImage  String?
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+
+  // Relationships
+  artisanProfile ArtisanProfile?
+  givenReviews   Review[]        @relation("CustomerReviews")
+  jobRequests    JobRequest[]    @relation("CustomerJobs")
+}
+
+model Category {
+  id       String           @id @default(cuid())
+  name     String           @unique // e.g., "Plumber"
+  slug     String           @unique // e.g., "plumber"
+  icon     String?          // Emoji or URL
+  artisans ArtisanProfile[]
+}
+
+model ArtisanProfile {
+  id              String       @id @default(cuid())
+  userId          String       @unique
+  user            User         @relation(fields: [userId], references: [id])
+  categoryId      String
+  category        Category     @relation(fields: [categoryId], references: [id])
+  
+  experienceYears Int
+  bio             String?      @db.Text
+  available       Boolean      @default(true)
+  
+  // Location data
+  latitude        Float
+  longitude       Float
+  address         String
+
+  // Relationships
+  portfolio       PortfolioItem[]
+  reviews         Review[]        @relation("ArtisanReviews")
+  jobs            JobRequest[]    @relation("ArtisanJobs")
+  
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+}
+
+model Review {
+  id         String   @id @default(cuid())
+  rating     Int      // 1-5
+  comment    String?  @db.Text
+  customerId String
+  customer   User     @relation("CustomerReviews", fields: [customerId], references: [id])
+  artisanId  String
+  artisan    ArtisanProfile @relation("ArtisanReviews", fields: [artisanId], references: [id])
+  createdAt  DateTime @default(now())
+}
+
+model PortfolioItem {
+  id        String         @id @default(cuid())
+  url       String         // S3 or Cloudinary URL
+  caption   String?
+  artisanId String
+  artisan   ArtisanProfile @relation(fields: [artisanId], references: [id])
+}
+
+model JobRequest {
+  id          String    @id @default(cuid())
+  description String    @db.Text
+  status      JobStatus @default(PENDING)
+  customerId  String
+  customer    User      @relation("CustomerJobs", fields: [customerId], references: [id])
+  artisanId   String
+  artisan     ArtisanProfile @relation("ArtisanJobs", fields: [artisanId], references: [id])
+  scheduledAt DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
