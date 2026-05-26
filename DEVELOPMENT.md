@@ -11,10 +11,14 @@ WorkManGH is a mobile application built with React Native and Expo that connects
 - **Framework**: React Native 0.74.5
 - **Platform**: Expo ~51.0.0
 - **UI Navigation**: React Navigation (Stack Navigator)
-- **State Management**: React Hooks (useState, useEffect)
+- **State Management**: React Hooks & TanStack Query (Pending)
+- **Backend**: Node.js + Express
+- **Database**: PostgreSQL
+- **ORM**: Prisma
 - **Location Services**: expo-location
 - **Image Handling**: expo-image-picker
 - **Deep Linking**: expo-linking
+- **Database ORM**: Prisma (Pending Integration)
 
 ### Project Structure
 
@@ -73,12 +77,20 @@ Each category card shows an emoji icon and name.
 
 **Data Flow**:
 1. Receives `category` from navigation params
-2. Requests user location permission
-3. Gets current GPS coordinates
-4. Fetches artisans by category
-5. Calculates distance for each artisan
-6. Sorts by distance (nearest first)
-7. Renders list
+2. Fetches artisans via API: `GET /api/artisans?category={id}`
+3. Sorts results locally using GPS coordinates
+4. Renders list
+
+## Backend Architecture (Collaborative)
+
+### 1. Database Syncing
+Developers should use the shared PostgreSQL instance provided in the `.env` file. Run `npx prisma generate` after any schema changes.
+
+### 2. API Documentation
+We use Swagger for endpoint documentation. Access it at `http://localhost:3000/api-docs` during local development.
+
+### 3. Git Workflow
+Feature branches are mandatory. Backend changes must include updated Prisma migrations.
 
 ### 4. ArtisanDetailScreen
 **Path**: `src/screens/ArtisanDetailScreen.js`
