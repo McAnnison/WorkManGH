@@ -14,6 +14,8 @@ import { getNearbyArtisans } from '../data/artisanData';
 
 export default function ArtisanListScreen({ route, navigation }) {
   const { category } = route.params;
+  const categoryLabel = category.pluralName || `${category.name}s`;
+  const categoryLabelLower = categoryLabel.toLowerCase();
   const [artisans, setArtisans] = useState([]);
   const [loading, setLoading] = useState(true);
   const [location, setLocation] = useState(null);
@@ -196,20 +198,19 @@ export default function ArtisanListScreen({ route, navigation }) {
             </View>
           ) : null}
           <Text style={styles.title}>
-            {category.icon} {category.name}s Near You
+            {category.icon} {categoryLabel} Near You
           </Text>
           
           {artisans.length === 0 ? (
             <View style={styles.emptyContainer}>
               <Text style={styles.emptyText}>
-                No {category.name.toLowerCase()}s found in your area
+                No {categoryLabelLower} found in your area
               </Text>
             </View>
           ) : (
             <View>
               <Text style={styles.resultCount}>
-                Found {artisans.length} {category.name.toLowerCase()}
-                {artisans.length !== 1 ? 's' : ''}
+                Found {artisans.length} {categoryLabelLower}
               </Text>
               {artisans.map((artisan, index) => {
                 const anim = cardAnims.current[index] || new Animated.Value(1);
