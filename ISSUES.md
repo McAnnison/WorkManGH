@@ -6,16 +6,16 @@ This document outlines the parallel tasks for Backend/API integration.
 **Focus:** Database setup and the Customer discovery journey.
 
 ### Issue 1.1: Express/Prisma Foundation & DB Seeding
-- [ ] Initialize Node.js/Express server boilerplate.
-- [ ] Initialize Prisma client using the existing `schema.prisma`.
-- [ ] Create a `seed.js` script to populate the `Category` table with the 8 trades (Mason, Carpenter, etc.).
-- [ ] Seed the database with `SAMPLE_ARTISANS` data from `artisanData.js` to ensure the frontend has data to fetch.
+- [x] Initialize Node.js/Express server boilerplate.
+- [x] Initialize Prisma client using the existing `schema.prisma`.
+- [x] Create a `seed.js` script to populate the `Category` table with the 8 trades (Mason, Carpenter, etc.).
+- [x] Seed the database with `SAMPLE_ARTISANS` data from `artisanData.js` to ensure the frontend has data to fetch.
 
 ### Issue 1.2: Discovery API (Categories & Artisan Listing)
-- [ ] Create `GET /api/categories`: Returns all trade categories for the grid view.
-- [ ] Create `GET /api/artisans`: Returns a list of artisans.
-    - Support query params: `?categoryId=...` and `?available=true`.
-    - Ensure GPS coordinates are included in the payload for frontend proximity sorting.
+- [x] Create `GET /api/categories`: Returns all trade categories for the grid view.
+- [x] Create `GET /api/artisans`: Returns a list of artisans.
+    - [x] Support query params: `?categoryId=...` and `?available=true`.
+    - [x] Ensure GPS coordinates are included in the payload for frontend proximity sorting.
 
 ---
 

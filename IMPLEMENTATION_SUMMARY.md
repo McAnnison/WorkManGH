@@ -276,7 +276,9 @@ These are by design for an MVP/prototype.
 ## 🚀 Phase 2: Production Readiness Checklist
 - [ ] **Backend API**: Set up Node.js/Express or Firebase backend.
 - [ ] **Database**: Migrate `artisanData.js` to a real database (PostgreSQL/Prisma).
-- [ ] **Auth**: Implement Clerk, Firebase, or JWT-based authentication.
+- [x] **Backend API**: Set up Node.js/Express backend with Prisma.
+- [x] **Database**: Categories and sample artisans seeded.
+- [ ] **Auth**: Implement authentication (Clerk, Firebase, or JWT).
 - [ ] **Image Storage**: Integrate Cloudinary or AWS S3 for profile/portfolio photos.
 - [ ] **Live Ratings**: Enable users to post star ratings and text reviews.
 - [ ] **Push Notifications**: Notify artisans of new job requests.
