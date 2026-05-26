@@ -40,7 +40,7 @@ export default function App() {
         <Stack.Screen 
           name="ArtisanList" 
           component={ArtisanListScreen}
-          options={{ title: 'Available Artisans' }}
+          options={{ title: ' Available Artisans' }}
         />
         <Stack.Screen 
           name="ArtisanDetail" 
