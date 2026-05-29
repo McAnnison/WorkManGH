@@ -9,6 +9,7 @@ import ArtisanListScreen from './src/screens/ArtisanListScreen';
 import ArtisanDetailScreen from './src/screens/ArtisanDetailScreen';
 import ArtisanRegistrationScreen from './src/screens/ArtisanRegistrationScreen';
 import ArtisanProfileScreen from './src/screens/ArtisanProfileScreen';
+import ArtisanDashboardScreen from './src/screens/ArtisanDashboardScreen';
 
 const Stack = createStackNavigator();
 
@@ -56,6 +57,11 @@ export default function App() {
           name="ArtisanProfile" 
           component={ArtisanProfileScreen}
           options={{ title: 'My Profile' }}
+        />
+        <Stack.Screen 
+          name="ArtisanDashboard" 
+          component={ArtisanDashboardScreen}
+          options={{ title: 'Artisan Dashboard', headerLeft: null }}
         />
       </Stack.Navigator>
     </NavigationContainer>

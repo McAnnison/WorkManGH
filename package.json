@@ -10,6 +10,10 @@
     "web": "expo start --web"
   },
   "dependencies": {
+    "@neondatabase/serverless": "^1.1.0",
+    "@prisma/adapter-neon": "^7.8.0",
+    "@prisma/adapter-pg": "^7.8.0",
+    "@react-native-async-storage/async-storage": "2.2.0",
     "@react-navigation/native": "^6.1.9",
     "@react-navigation/stack": "^6.3.20",
     "babel-preset-expo": "~54.0.9",
@@ -18,6 +22,8 @@
     "expo-linking": "~8.0.11",
     "expo-location": "~19.0.8",
     "expo-status-bar": "~3.0.9",
+    "jsonwebtoken": "^9.0.3",
+    "pg": "^8.21.0",
     "react": "19.1.0",
     "react-native": "0.81.5",
     "react-native-gesture-handler": "~2.28.0",

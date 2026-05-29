@@ -9,7 +9,11 @@ import {
   TextInput,
   Alert,
 } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ARTISAN_CATEGORIES } from '../data/artisanData';
+
+// Replace with your actual local IP address (e.g., 192.168.1.5)
+const API_URL = 'http://YOUR_API_URL:3000';
 
 export default function ArtisanRegistrationScreen({ navigation }) {
   const [formData, setFormData] = useState({
@@ -28,7 +32,7 @@ export default function ArtisanRegistrationScreen({ navigation }) {
     updateField('category', category);
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     // Validate form
     if (!formData.name || !formData.phone || !formData.category || !formData.experience) {
       Alert.alert('Missing Information', 'Please fill in all required fields');
@@ -48,20 +52,40 @@ export default function ArtisanRegistrationScreen({ navigation }) {
       return;
     }
 
-    // In a real app, this would send data to a backend
-    Alert.alert(
-      'Registration Successful!',
-      `Welcome, ${formData.name}! You are now registered as a ${formData.category.name}.`,
-      [
-        {
-          text: 'OK',
-          onPress: () => {
-            // Navigate to artisan profile (in this demo, we'll go back home)
-            navigation.navigate('Home');
-          },
+    try {
+      const token = await AsyncStorage.getItem('userToken');
+      
+      const response = await fetch(`${API_URL}/api/artisans/register`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
         },
-      ]
-    );
+        body: JSON.stringify({
+          categoryId: formData.category.id,
+          experienceYears: experienceNum,
+          bio: formData.bio,
+          latitude: 5.6037, // Default Accra coords
+          longitude: -0.1870,
+          address: "Accra, Ghana"
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        Alert.alert('Success', 'Registration successful!', [
+          { 
+            text: 'Go to Dashboard', 
+            onPress: () => navigation.replace('ArtisanDashboard') 
+          },
+        ]);
+      } else {
+        Alert.alert('Registration Failed', data.error || 'Something went wrong');
+      }
+    } catch (error) {
+      Alert.alert('Error', 'Could not connect to the server');
+    }
   };
 
   return (

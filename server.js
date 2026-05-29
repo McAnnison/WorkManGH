@@ -1,15 +1,20 @@
 require('dotenv').config(); // Load environment variables from .env file
 const express = require('express');
-const { PrismaClient } = require('@prisma/client');
 const cors = require('cors');
+const authRoutes = require('./auth');
+const artisanRoutes = require('./artisans');
+const prisma = require('./db');
 
-const prisma = new PrismaClient();
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 // Middleware
 app.use(cors()); // Enable CORS for all routes
 app.use(express.json()); // Enable JSON body parsing
+
+// Routes
+app.use('/api/auth', authRoutes);
+app.use('/api/artisans', artisanRoutes);
 
 // Root endpoint for testing server status
 app.get('/', (req, res) => {

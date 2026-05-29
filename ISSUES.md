@@ -23,14 +23,14 @@ This document outlines the parallel tasks for Backend/API integration.
 **Focus:** Authentication and the Artisan management journey.
 
 ### Issue 2.1: Authentication System
-- [ ] Implement `POST /api/auth/signup` and `POST /api/auth/login`.
-- [ ] Use JWT (JSON Web Tokens) for session management.
-- [ ] Implement backend validation for Ghanaian phone formats (matching frontend regex).
-- [ ] Create an `authMiddleware` to protect artisan-specific routes.
+- [x] Implement `POST /api/auth/signup` and `POST /api/auth/login`.
+- [x] Use JWT (JSON Web Tokens) for session management.
+- [x] Implement backend validation for Ghanaian phone formats (matching frontend regex).
+- [x] Create an `authMiddleware` to protect artisan-specific routes.
 
-### Issue 2.2: Artisan Profile & Availability Management
-- [ ] Create `POST /api/artisans/register`: Protected route to create an artisan profile linked to a user.
-- [ ] Create `PATCH /api/artisans/availability`: Protected route to toggle the `available` boolean.
+### Issue 2.2: Artisan Profile & Availability Management (Backend)
+- [x] Create `POST /api/artisans/register`: Protected route to create an artisan profile linked to a user.
+- [x] Create `PATCH /api/artisans/availability`: Protected route to toggle the `available` boolean.
 - [ ] **Frontend Integration**: Update `ArtisanRegistrationScreen.js` to send form data to the new API instead of local logging.
 
 ---
