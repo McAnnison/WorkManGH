@@ -5,9 +5,10 @@ import {
   StyleSheet,
   TouchableOpacity,
   ScrollView,
-  SafeAreaView,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { ARTISAN_CATEGORIES } from '../data/artisanData';
+import { MaterialIcons } from '@expo/vector-icons';
 
 export default function CategorySelectionScreen({ navigation }) {
   const handleCategorySelect = (category) => {
@@ -17,10 +18,12 @@ export default function CategorySelectionScreen({ navigation }) {
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView contentContainerStyle={styles.content}>
-        <Text style={styles.title}>Select Artisan Category</Text>
-        <Text style={styles.subtitle}>
-          Choose the type of skilled worker you need
-        </Text>
+        <View style={styles.header}>
+          <Text style={styles.title}>What do you need help with?</Text>
+          <Text style={styles.subtitle}>
+            Select a category to find skilled workers near you
+          </Text>
+        </View>
 
         <View style={styles.categoryGrid}>
           {ARTISAN_CATEGORIES.map((category) => (
@@ -29,8 +32,13 @@ export default function CategorySelectionScreen({ navigation }) {
               style={styles.categoryCard}
               onPress={() => handleCategorySelect(category)}
             >
-              <Text style={styles.categoryIcon}>{category.icon}</Text>
+              <View style={styles.iconContainer}>
+                <Text style={styles.categoryIconEmoji}>{category.icon}</Text>
+              </View>
               <Text style={styles.categoryName}>{category.name}</Text>
+              <View style={styles.badge}>
+                <MaterialIcons name="chevron-right" size={20} color="#0B3A6A" />
+              </View>
             </TouchableOpacity>
           ))}
         </View>
@@ -47,15 +55,18 @@ const styles = StyleSheet.create({
   content: {
     padding: 20,
   },
+  header: {
+    marginBottom: 30,
+  },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#0B1F3B',
+    color: '#0B3A6A',
     marginBottom: 8,
   },
   subtitle: {
     fontSize: 16,
-    color: '#3B4A66',
+    color: '#6B7C97',
     marginBottom: 24,
   },
   categoryGrid: {
@@ -66,24 +77,38 @@ const styles = StyleSheet.create({
   categoryCard: {
     width: '48%',
     backgroundColor: '#FFF',
-    borderRadius: 12,
-    padding: 20,
+    borderRadius: 20,
+    padding: 24,
     alignItems: 'center',
-    marginBottom: 15,
-    elevation: 3,
+    marginBottom: 16,
+    elevation: 4,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.08,
+    shadowRadius: 8,
   },
-  categoryIcon: {
-    fontSize: 48,
+  iconContainer: {
+    width: 64,
+    height: 64,
+    borderRadius: 32,
+    backgroundColor: '#F0F7FF',
+    justifyContent: 'center',
+    alignItems: 'center',
     marginBottom: 10,
   },
+  categoryIconEmoji: {
+    fontSize: 32,
+  },
   categoryName: {
-    fontSize: 16,
+    fontSize: 15,
     fontWeight: 'bold',
-    color: '#0B1F3B',
+    color: '#0B3A6A',
     textAlign: 'center',
+  },
+  badge: {
+    position: 'absolute',
+    bottom: 12,
+    right: 12,
+    opacity: 0.5,
   },
 });

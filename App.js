@@ -10,6 +10,7 @@ import ArtisanDetailScreen from './src/screens/ArtisanDetailScreen';
 import ArtisanRegistrationScreen from './src/screens/ArtisanRegistrationScreen';
 import ArtisanProfileScreen from './src/screens/ArtisanProfileScreen';
 import ArtisanDashboardScreen from './src/screens/ArtisanDashboardScreen';
+import SplashScreen from './src/screens/SplashScreen';
 
 const Stack = createStackNavigator();
 
@@ -17,7 +18,7 @@ export default function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator 
-        initialRouteName="Home"
+        initialRouteName="Splash"
         screenOptions={{
           headerStyle: {
             backgroundColor: '#0B3A6A',
@@ -28,6 +29,11 @@ export default function App() {
           },
         }}
       >
+        <Stack.Screen 
+          name="Splash" 
+          component={SplashScreen}
+          options={{ headerShown: false }}
+        />
         <Stack.Screen 
           name="Home" 
           component={HomeScreen}

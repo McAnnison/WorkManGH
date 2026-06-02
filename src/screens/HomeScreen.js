@@ -5,72 +5,85 @@ import {
   StyleSheet,
   TouchableOpacity,
   ScrollView,
-  SafeAreaView,
+  Dimensions,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
+
+const { width } = Dimensions.get('window');
 
 export default function HomeScreen({ navigation }) {
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView contentContainerStyle={styles.content}>
         <View style={styles.header}>
+          <View style={styles.logoContainer}>
+            <MaterialCommunityIcons name="tools" size={64} color="#0B3A6A" />
+          </View>
           <Text style={styles.title}>WorkManGH</Text>
-          <Text style={styles.subtitle}>
-            Connect with skilled local artisans
-          </Text>
+          <Text style={styles.subtitle}>Professional help at your fingertips</Text>
         </View>
 
         <View style={styles.buttonContainer}>
           <TouchableOpacity
-            style={[styles.button, styles.primaryButton]}
+            activeOpacity={0.8}
+            style={[styles.mainButton, styles.primaryButton]}
             onPress={() => navigation.navigate('CategorySelection')}
           >
-            <Text style={styles.buttonText}>Find an Artisan</Text>
-            <Text style={styles.buttonSubtext}>
-              Browse skilled workers near you
-            </Text>
+            <View style={styles.buttonIcon}>
+              <MaterialIcons name="search" size={32} color="#FFF" />
+            </View>
+            <View>
+              <Text style={styles.buttonText}>Find an Artisan</Text>
+              <Text style={styles.buttonSubtext}>Browse skilled workers near you</Text>
+            </View>
           </TouchableOpacity>
 
           <TouchableOpacity
-            style={[styles.button, styles.secondaryButton]}
+            activeOpacity={0.8}
+            style={[styles.mainButton, styles.secondaryButton]}
             onPress={() => navigation.navigate('ArtisanRegistration')}
           >
-            <Text style={styles.buttonText}>Register as Artisan</Text>
-            <Text style={styles.buttonSubtext}>
-              Join our network of skilled workers
-            </Text>
+            <View style={styles.buttonIcon}>
+              <MaterialIcons name="person-add" size={32} color="#FFF" />
+            </View>
+            <View>
+              <Text style={styles.buttonText}>Register as Artisan</Text>
+              <Text style={styles.buttonSubtext}>Join our network of skilled workers</Text>
+            </View>
           </TouchableOpacity>
         </View>
 
         <View style={styles.infoSection}>
           <Text style={styles.infoTitle}>How It Works</Text>
-          
+
           <View style={styles.infoCard}>
-            <Text style={styles.infoNumber}>1</Text>
+            <View style={[styles.stepNumber, { backgroundColor: '#0B3A6A' }]}>
+              <Text style={styles.stepText}>1</Text>
+            </View>
             <View style={styles.infoContent}>
               <Text style={styles.infoHeading}>Choose Category</Text>
-              <Text style={styles.infoText}>
-                Select the type of artisan you need
-              </Text>
+              <Text style={styles.infoText}>Select the type of artisan you need</Text>
             </View>
           </View>
 
           <View style={styles.infoCard}>
-            <Text style={styles.infoNumber}>2</Text>
+            <View style={[styles.stepNumber, { backgroundColor: '#1D4ED8' }]}>
+              <Text style={styles.stepText}>2</Text>
+            </View>
             <View style={styles.infoContent}>
               <Text style={styles.infoHeading}>View Nearby Artisans</Text>
-              <Text style={styles.infoText}>
-                See skilled workers near your location
-              </Text>
+              <Text style={styles.infoText}>See skilled workers near your location</Text>
             </View>
           </View>
 
           <View style={styles.infoCard}>
-            <Text style={styles.infoNumber}>3</Text>
+            <View style={[styles.stepNumber, { backgroundColor: '#10B981' }]}>
+              <Text style={styles.stepText}>3</Text>
+            </View>
             <View style={styles.infoContent}>
               <Text style={styles.infoHeading}>Call & Connect</Text>
-              <Text style={styles.infoText}>
-                Contact artisans directly via phone
-              </Text>
+              <Text style={styles.infoText}>Contact artisans directly via phone</Text>
             </View>
           </View>
         </View>
@@ -108,12 +121,25 @@ const styles = StyleSheet.create({
   button: {
     padding: 20,
     borderRadius: 12,
+  },
+  mainButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 24,
+    borderRadius: 20,
     marginBottom: 15,
-    elevation: 3,
+    elevation: 6,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
+  },
+  
+  buttonIcon: {
+    width: 56,
+    height: 56,
+    borderRadius: 18,
+    backgroundColor: 'rgba(255,255,255,0.2)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 20,
   },
   primaryButton: {
     backgroundColor: '#0B3A6A',
@@ -122,10 +148,10 @@ const styles = StyleSheet.create({
     backgroundColor: '#1D4ED8',
   },
   buttonText: {
-    fontSize: 20,
+    fontSize: 22,
     fontWeight: 'bold',
     color: '#FFF',
-    marginBottom: 5,
+    marginBottom: 2,
   },
   buttonSubtext: {
     fontSize: 14,
@@ -134,31 +160,38 @@ const styles = StyleSheet.create({
   },
   infoSection: {
     marginTop: 20,
+    paddingBottom: 20,
   },
   infoTitle: {
-    fontSize: 24,
+    fontSize: 20,
     fontWeight: 'bold',
-    color: '#0B1F3B',
+    color: '#0B3A6A',
     marginBottom: 15,
   },
   infoCard: {
     flexDirection: 'row',
     backgroundColor: '#FFF',
-    padding: 15,
-    borderRadius: 10,
+    padding: 18,
+    borderRadius: 16,
     marginBottom: 12,
     elevation: 2,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.2,
-    shadowRadius: 1.41,
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
   },
-  infoNumber: {
-    fontSize: 32,
-    fontWeight: 'bold',
-    color: '#0B3A6A',
+  stepNumber: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    justifyContent: 'center',
+    alignItems: 'center',
     marginRight: 15,
-    width: 40,
+  },
+  stepText: {
+    color: '#FFF',
+    fontSize: 20,
+    fontWeight: 'bold',
   },
   infoContent: {
     flex: 1,

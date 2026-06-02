@@ -5,11 +5,12 @@ import {
   StyleSheet,
   TouchableOpacity,
   ScrollView,
-  SafeAreaView,
   ActivityIndicator,
   Animated,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import * as Location from 'expo-location';
+import { MaterialIcons } from '@expo/vector-icons';
 import { getNearbyArtisans } from '../data/artisanData';
 
 export default function ArtisanListScreen({ route, navigation }) {
@@ -130,11 +131,15 @@ export default function ArtisanListScreen({ route, navigation }) {
         </View>
         <View style={styles.artisanInfo}>
           <Text style={styles.artisanName}>{artisan.name}</Text>
-          <Text style={styles.artisanLocation}>
-            📍 {artisan.location.address}
-          </Text>
+          <View style={styles.locationContainer}>
+            <MaterialIcons name="location-on" size={14} color="#6B7C97" />
+            <Text style={styles.artisanLocation} numberOfLines={1}>
+              {artisan.location.address}
+            </Text>
+          </View>
           <View style={styles.ratingContainer}>
-            <Text style={styles.rating}>⭐ {artisan.rating}</Text>
+            <MaterialIcons name="star" size={16} color="#FBBF24" />
+            <Text style={styles.rating}>{artisan.rating}</Text>
             <Text style={styles.reviews}>({artisan.reviewCount} reviews)</Text>
           </View>
         </View>
@@ -142,23 +147,30 @@ export default function ArtisanListScreen({ route, navigation }) {
 
       <View style={styles.artisanDetails}>
         <View style={styles.detailItem}>
-          <Text style={styles.detailLabel}>Experience</Text>
+          <MaterialIcons name="work" size={18} color="#0B3A6A" />
           <Text style={styles.detailValue}>{artisan.experience} years</Text>
+          <Text style={styles.detailLabel}>Exp.</Text>
         </View>
         <View style={styles.detailItem}>
-          <Text style={styles.detailLabel}>Distance</Text>
+          <MaterialIcons name="near-me" size={18} color="#0B3A6A" />
           <Text style={styles.detailValue}>
             {artisan.distance ? `${artisan.distance.toFixed(1)} km` : 'N/A'}
           </Text>
+          <Text style={styles.detailLabel}>Dist.</Text>
         </View>
         <View style={styles.detailItem}>
-          <Text style={styles.detailLabel}>Status</Text>
+          <MaterialIcons 
+            name={artisan.available ? "check-circle" : "do-not-disturb-on"} 
+            size={18} 
+            color={artisan.available ? "#10B981" : "#EF4444"} 
+          />
           <Text style={[
             styles.detailValue,
             artisan.available ? styles.available : styles.busy
           ]}>
             {artisan.available ? 'Available' : 'Busy'}
           </Text>
+          <Text style={styles.detailLabel}>Status</Text>
         </View>
       </View>
     </TouchableOpacity>
