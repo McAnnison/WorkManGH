@@ -16,6 +16,15 @@ export default function HomeScreen({ navigation }) {
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView contentContainerStyle={styles.content}>
+        <View style={styles.topBar}>
+          <TouchableOpacity 
+            style={styles.loginLink} 
+            onPress={() => navigation.navigate('Login')}
+          >
+            <Text style={styles.loginLinkText}>Sign In</Text>
+          </TouchableOpacity>
+        </View>
+
         <View style={styles.header}>
           <View style={styles.logoContainer}>
             <MaterialCommunityIcons name="tools" size={64} color="#0B3A6A" />
@@ -99,6 +108,18 @@ const styles = StyleSheet.create({
   },
   content: {
     padding: 20,
+  },
+  topBar: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    marginBottom: 10,
+  },
+  loginLink: {
+    padding: 8,
+  },
+  loginLinkText: {
+    color: '#0B3A6A',
+    fontWeight: 'bold',
   },
   header: {
     marginBottom: 30,

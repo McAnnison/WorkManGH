@@ -1,8 +1,19 @@
+require('dotenv').config(); // Load environment variables first
 const { PrismaClient } = require('@prisma/client');
-const prisma = new PrismaClient();
+const bcrypt = require('bcrypt');
+const prisma = new PrismaClient({});
 
 async function main() {
   console.log('🌱 Starting database seeding...');
+
+  // Optional: Clear existing reviews to allow clean re-seeding
+  console.log('Cleaning up existing reviews...');
+  await prisma.review.deleteMany({});
+
+  // Define test passwords and hash them
+  const saltRounds = 10;
+  const artisanHashedPassword = await bcrypt.hash('password123', saltRounds);
+  const userHashedPassword = await bcrypt.hash('securepass456', saltRounds);
 
   // 1. Create Categories
   const categories = [
@@ -87,13 +98,12 @@ async function main() {
   for (const artisanData of sampleArtisansData) {
     const user = await prisma.user.upsert({
       where: { phone: artisanData.phone },
-      update: {
-        name: artisanData.name,
-        role: 'ARTISAN',
-      },
+      update: {},
       create: {
         name: artisanData.name,
         phone: artisanData.phone,
+        email: `artisan_${artisanData.phone}@workman.com`,
+        password: artisanHashedPassword,
         role: 'ARTISAN',
         artisanProfile: {
           create: {
@@ -112,18 +122,46 @@ async function main() {
     createdArtisans.push(user.artisanProfile);
   }
 
+  // 4. Create Specific Test Credentials for Workflow Testing
+  console.log('Creating specific test credentials...');
+  
+  // Test Artisan Account
+  await prisma.user.upsert({
+    where: { email: 'artisan.test@example.com' },
+    update: {},
+    create: {
+      name: 'Test Artisan',
+      email: 'artisan.test@example.com',
+      password: artisanHashedPassword,
+      phone: '0000000001',
+      role: 'ARTISAN',
+    },
+  });
+
+  // Test Regular User Account
+  await prisma.user.upsert({
+    where: { email: 'user.test@example.com' },
+    update: {},
+    create: {
+      name: 'Test User',
+      email: 'user.test@example.com',
+      password: userHashedPassword,
+      phone: '0000000002',
+      role: 'USER',
+    },
+  });
+
   // 3. Create a Sample Review
   console.log('Creating sample review...');
   const customerUser = await prisma.user.upsert({
     where: { phone: '0555987654' },
-    update: {
-      name: 'Ama Serwaa',
-      role: 'CUSTOMER',
-    },
+    update: {},
     create: {
       name: 'Ama Serwaa',
       phone: '0555987654',
-      role: 'CUSTOMER',
+      email: 'ama@example.com',
+      password: userHashedPassword,
+      role: 'USER',
     },
   });
   
@@ -134,7 +172,7 @@ async function main() {
       rating: 5,
       comment: 'Very professional and arrived on time!',
       customerId: customerUser.id,
-      artisanId: firstArtisanProfile.id,
+      artisanProfileId: firstArtisanProfile.id,
     },
   });
 

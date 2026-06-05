@@ -14,12 +14,13 @@ model User {
   email        String          @unique
   password     String
   name         String?
-  phone        String?
+  phone        String?         @unique
   profileImage String?
   role         Role            @default(USER)
   createdAt    DateTime        @default(now())
   updatedAt    DateTime        @updatedAt
   artisan      ArtisanProfile?
+  reviews      Review[]
 }
 
 enum Role {
@@ -54,6 +55,9 @@ model Category {
 model Review {
   id               String         @id @default(cuid())
   rating           Int
+  comment          String?
   artisan          ArtisanProfile @relation(fields: [artisanProfileId], references: [id])
   artisanProfileId String
+  customer         User           @relation(fields: [customerId], references: [id])
+  customerId       String
 }

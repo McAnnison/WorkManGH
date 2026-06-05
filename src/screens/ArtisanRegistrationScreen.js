@@ -14,7 +14,7 @@ import { MaterialIcons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ARTISAN_CATEGORIES } from '../data/artisanData';
 
-// Replace with your actual local IP address (e.g., 192.168.1.5)
+
 const API_URL = 'http://192.168.56.1:3000';
 
 export default function ArtisanRegistrationScreen({ navigation }) {
@@ -31,6 +31,18 @@ export default function ArtisanRegistrationScreen({ navigation }) {
   const [phoneError, setPhoneError] = useState('');
   const [experienceError, setExperienceError] = useState('');
   const [categoryError, setCategoryError] = useState('');
+
+  useEffect(() => {
+    checkAuth();
+  }, []);
+
+  const checkAuth = async () => {
+    const token = await AsyncStorage.getItem('userToken');
+    if (!token) {
+      Alert.alert('Authentication Required', 'You must be logged in to register as an artisan.');
+      navigation.navigate('Login');
+    }
+  };
 
   useEffect(() => {
     if (formData.name) setNameError('');
