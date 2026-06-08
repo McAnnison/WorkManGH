@@ -1,16 +1,27 @@
 import React from 'react';
 import {
   View,
-  Text,
   StyleSheet,
-  TouchableOpacity,
   ScrollView,
   Linking,
   Alert,
 } from 'react-native';
+import { 
+  Text, 
+  Button, 
+  Card, 
+  Avatar, 
+  IconButton, 
+  List, 
+  Divider,
+  Surface,
+  Badge
+} from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { COLORS, SPACING, TYPOGRAPHY, BORDER_RADIUS, SHADOWS } from '../theme';
 
-export default function ArtisanDetailScreen({ route }) {
+export default function ArtisanDetailScreen({ route, navigation }) {
   const { artisan } = route.params;
 
   const handleCallArtisan = () => {
@@ -32,108 +43,142 @@ export default function ArtisanDetailScreen({ route }) {
   const handleSendRequest = () => {
     Alert.alert(
       'Job Request',
-      'In a full version, this would send a job request notification to the artisan.',
-      [{ text: 'OK' }]
+      'Your request has been sent! The artisan will provide a quote shortly.',
+      [{ text: 'Great!' }]
     );
   };
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView contentContainerStyle={styles.content}>
-        {/* Profile Section */}
-        <View style={styles.profileSection}>
-          <View style={styles.profilePlaceholder}>
-            <Text style={styles.profileInitial}>
-              {artisan.name.charAt(0)}
-            </Text>
-          </View>
-          <Text style={styles.name}>{artisan.name}</Text>
-          <Text style={styles.category}>{artisan.category.toUpperCase()}</Text>
+      <View style={styles.header}>
+        <IconButton 
+          icon="arrow-left" 
+          size={24} 
+          onPress={() => navigation.goBack()} 
+          iconColor={COLORS.primary}
+          style={styles.backButton}
+        />
+        <Text variant="titleLarge" style={styles.headerTitle}>Profile</Text>
+        <IconButton 
+          icon="share-variant-outline" 
+          size={24} 
+          onPress={() => {}} 
+          iconColor={COLORS.primary}
+        />
+      </View>
+
+      <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
+        {/* Profile Card */}
+        <Surface style={styles.profileCard} elevation={0}>
+          <Avatar.Text 
+            size={100} 
+            label={artisan.name.charAt(0)} 
+            backgroundColor={COLORS.primary} 
+          />
+          {artisan.available && (
+            <Badge style={styles.onlineBadge} size={16}>ONLINE</Badge>
+          )}
+          <Text variant="headlineMedium" style={styles.name}>{artisan.name}</Text>
+          <Text variant="bodyLarge" style={styles.category}>
+            {artisan.category.toUpperCase()}
+          </Text>
           
-          <View style={styles.ratingContainer}>
-            <Text style={styles.rating}>⭐ {artisan.rating}</Text>
-            <Text style={styles.reviews}>({artisan.reviewCount} reviews)</Text>
+          <View style={styles.ratingRow}>
+            <MaterialIcons name="star" size={24} color={COLORS.accent} />
+            <Text variant="headlineSmall" style={styles.ratingText}>{artisan.rating}</Text>
+            <Text variant="bodyMedium" style={styles.reviewText}>({artisan.reviewCount} reviews)</Text>
           </View>
+        </Surface>
 
-          <View style={[
-            styles.statusBadge,
-            artisan.available ? styles.availableBadge : styles.busyBadge
-          ]}>
-            <Text style={styles.statusText}>
-              {artisan.available ? '✓ Available' : '● Busy'}
-            </Text>
-          </View>
+        {/* Quick Info Grid */}
+        <View style={styles.infoGrid}>
+          <Card style={styles.infoCard} mode="contained">
+            <Card.Content style={styles.infoCardContent}>
+              <MaterialIcons name="work-outline" size={24} color={COLORS.primary} />
+              <Text variant="titleMedium" style={styles.infoValue}>{artisan.experience} yrs</Text>
+              <Text variant="labelSmall" style={styles.infoLabel}>Experience</Text>
+            </Card.Content>
+          </Card>
+          <Card style={styles.infoCard} mode="contained">
+            <Card.Content style={styles.infoCardContent}>
+              <MaterialIcons name="near-me" size={24} color={COLORS.primary} />
+              <Text variant="titleMedium" style={styles.infoValue}>
+                {artisan.distance ? `${artisan.distance.toFixed(1)} km` : 'N/A'}
+              </Text>
+              <Text variant="labelSmall" style={styles.infoLabel}>Distance</Text>
+            </Card.Content>
+          </Card>
+          <Card style={styles.infoCard} mode="contained">
+            <Card.Content style={styles.infoCardContent}>
+              <MaterialIcons name="verified-user" size={24} color={COLORS.success} />
+              <Text variant="titleMedium" style={[styles.infoValue, { color: COLORS.success }]}>Verified</Text>
+              <Text variant="labelSmall" style={styles.infoLabel}>Identity</Text>
+            </Card.Content>
+          </Card>
         </View>
 
-        {/* Info Cards */}
-        <View style={styles.infoSection}>
-          <View style={styles.infoCard}>
-            <Text style={styles.infoIcon}>📍</Text>
-            <View style={styles.infoContent}>
-              <Text style={styles.infoLabel}>Location</Text>
-              <Text style={styles.infoValue}>{artisan.location.address}</Text>
-            </View>
-          </View>
+        {/* Details List */}
+        <List.Section style={styles.listSection}>
+          <List.Item
+            title="Location"
+            description={artisan.location.address}
+            left={props => <List.Icon {...props} icon="map-marker-outline" color={COLORS.primary} />}
+            style={styles.listItem}
+          />
+          <Divider />
+          <List.Item
+            title="Phone"
+            description={artisan.phone}
+            left={props => <List.Icon {...props} icon="phone-outline" color={COLORS.primary} />}
+            style={styles.listItem}
+          />
+        </List.Section>
 
-          <View style={styles.infoCard}>
-            <Text style={styles.infoIcon}>📞</Text>
-            <View style={styles.infoContent}>
-              <Text style={styles.infoLabel}>Phone Number</Text>
-              <Text style={styles.infoValue}>{artisan.phone}</Text>
-            </View>
-          </View>
-
-          <View style={styles.infoCard}>
-            <Text style={styles.infoIcon}>💼</Text>
-            <View style={styles.infoContent}>
-              <Text style={styles.infoLabel}>Experience</Text>
-              <Text style={styles.infoValue}>{artisan.experience} years</Text>
-            </View>
-          </View>
-        </View>
-
-        {/* Bio Section */}
-        <View style={styles.bioSection}>
-          <Text style={styles.sectionTitle}>About</Text>
-          <Text style={styles.bioText}>{artisan.bio}</Text>
+        {/* About Section */}
+        <View style={styles.section}>
+          <Text variant="titleLarge" style={styles.sectionTitle}>About</Text>
+          <Text variant="bodyMedium" style={styles.bioText}>
+            {artisan.bio || "No description provided yet."}
+          </Text>
         </View>
 
         {/* Portfolio Section */}
-        <View style={styles.portfolioSection}>
-          <Text style={styles.sectionTitle}>Portfolio</Text>
-          {artisan.portfolio.length === 0 ? (
-            <Text style={styles.emptyText}>No portfolio photos yet</Text>
-          ) : (
-            <View style={styles.portfolioGrid}>
-              {/* Portfolio images would be displayed here */}
-            </View>
-          )}
+        <View style={styles.section}>
+          <Text variant="titleLarge" style={styles.sectionTitle}>Portfolio</Text>
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.portfolioScroll}>
+            {[1, 2, 3].map((i) => (
+              <Surface key={i} style={styles.portfolioPlaceholder} elevation={1}>
+                <MaterialCommunityIcons name="image-outline" size={32} color={COLORS.border} />
+              </Surface>
+            ))}
+          </ScrollView>
         </View>
 
-        {/* Action Buttons */}
-        <View style={styles.actionSection}>
-          <TouchableOpacity
-            style={[styles.actionButton, styles.callButton]}
-            onPress={handleCallArtisan}
-          >
-            <Text style={styles.actionButtonText}>📞 Call Now</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={[styles.actionButton, styles.requestButton]}
-            onPress={handleSendRequest}
-            disabled={!artisan.available}
-          >
-            <Text style={styles.actionButtonText}>Send Job Request</Text>
-          </TouchableOpacity>
-        </View>
-
-        {!artisan.available && (
-          <Text style={styles.unavailableNote}>
-            This artisan is currently busy. You can still call to schedule for later.
-          </Text>
-        )}
+        <View style={styles.footerSpacer} />
       </ScrollView>
+
+      {/* Action Footer */}
+      <Surface style={styles.actionFooter} elevation={4}>
+        <Button 
+          mode="outlined" 
+          onPress={handleCallArtisan}
+          style={styles.callButton}
+          contentStyle={styles.buttonContent}
+          textColor={COLORS.primary}
+          icon="phone"
+        >
+          Call
+        </Button>
+        <Button 
+          mode="contained" 
+          onPress={handleSendRequest}
+          style={styles.requestButton}
+          contentStyle={styles.buttonContent}
+          disabled={!artisan.available}
+        >
+          {artisan.available ? 'Book Now' : 'Currently Busy'}
+        </Button>
+      </Surface>
     </SafeAreaView>
   );
 }
@@ -141,184 +186,141 @@ export default function ArtisanDetailScreen({ route }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#EEF2F8',
+    backgroundColor: COLORS.background,
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    backgroundColor: '#FFF',
+    paddingHorizontal: SPACING.s,
+    borderBottomWidth: 1,
+    borderBottomColor: COLORS.border,
+  },
+  headerTitle: {
+    fontWeight: 'bold',
+    color: COLORS.primary,
   },
   content: {
-    padding: 20,
+    padding: SPACING.m,
   },
-  profileSection: {
-    backgroundColor: '#FFF',
-    borderRadius: 12,
-    padding: 24,
+  profileCard: {
     alignItems: 'center',
-    marginBottom: 16,
-    elevation: 3,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
+    paddingVertical: SPACING.l,
+    backgroundColor: 'transparent',
   },
-  profilePlaceholder: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
-    backgroundColor: '#0B3A6A',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 16,
-  },
-  profileInitial: {
-    fontSize: 40,
+  onlineBadge: {
+    backgroundColor: COLORS.success,
+    marginTop: -10,
     fontWeight: 'bold',
-    color: '#FFF',
   },
   name: {
-    fontSize: 24,
     fontWeight: 'bold',
-    color: '#0B1F3B',
-    marginBottom: 4,
+    color: COLORS.primary,
+    marginTop: SPACING.m,
   },
   category: {
-    fontSize: 14,
-    color: '#3B4A66',
-    marginBottom: 12,
-    letterSpacing: 1,
+    color: COLORS.textSecondary,
+    letterSpacing: 2,
+    fontWeight: '600',
+    marginTop: SPACING.xs,
   },
-  ratingContainer: {
+  ratingRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 12,
+    marginTop: SPACING.m,
   },
-  rating: {
-    fontSize: 18,
+  ratingText: {
     fontWeight: 'bold',
-    color: '#0F4C81',
-    marginRight: 8,
+    color: COLORS.primary,
+    marginLeft: SPACING.s,
   },
-  reviews: {
-    fontSize: 14,
-    color: '#3B4A66',
+  reviewText: {
+    marginLeft: SPACING.s,
+    color: COLORS.textSecondary,
   },
-  statusBadge: {
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 20,
-    marginTop: 8,
-  },
-  availableBadge: {
-    backgroundColor: '#E7F6F2',
-  },
-  busyBadge: {
-    backgroundColor: '#E8F1FF',
-  },
-  statusText: {
-    fontSize: 14,
-    fontWeight: 'bold',
-    color: '#0B1F3B',
-  },
-  infoSection: {
-    marginBottom: 16,
+  infoGrid: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginVertical: SPACING.l,
   },
   infoCard: {
-    flexDirection: 'row',
+    flex: 0.31,
     backgroundColor: '#FFF',
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 8,
-    elevation: 2,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.2,
-    shadowRadius: 1.41,
+    borderRadius: BORDER_RADIUS.m,
   },
-  infoIcon: {
-    fontSize: 24,
-    marginRight: 12,
-  },
-  infoContent: {
-    flex: 1,
-  },
-  infoLabel: {
-    fontSize: 12,
-    color: '#3B4A66',
-    marginBottom: 4,
+  infoCardContent: {
+    alignItems: 'center',
+    paddingVertical: SPACING.m,
   },
   infoValue: {
-    fontSize: 16,
     fontWeight: 'bold',
-    color: '#0B1F3B',
+    marginTop: SPACING.xs,
   },
-  bioSection: {
+  infoLabel: {
+    color: COLORS.textSecondary,
+    marginTop: 2,
+  },
+  listSection: {
     backgroundColor: '#FFF',
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 16,
-    elevation: 2,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.2,
-    shadowRadius: 1.41,
+    borderRadius: BORDER_RADIUS.l,
+    overflow: 'hidden',
+    marginBottom: SPACING.l,
+  },
+  listItem: {
+    paddingVertical: SPACING.s,
+  },
+  section: {
+    marginBottom: SPACING.xl,
   },
   sectionTitle: {
-    fontSize: 18,
     fontWeight: 'bold',
-    color: '#0B1F3B',
-    marginBottom: 12,
+    color: COLORS.primary,
+    marginBottom: SPACING.m,
   },
   bioText: {
-    fontSize: 14,
-    color: '#3B4A66',
-    lineHeight: 20,
+    lineHeight: 24,
+    color: COLORS.text,
   },
-  portfolioSection: {
+  portfolioScroll: {
+    marginTop: SPACING.s,
+  },
+  portfolioPlaceholder: {
+    width: 120,
+    height: 120,
+    backgroundColor: '#F1F5F9',
+    borderRadius: BORDER_RADIUS.m,
+    marginRight: SPACING.m,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  footerSpacer: {
+    height: 100,
+  },
+  actionFooter: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
     backgroundColor: '#FFF',
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 16,
-    elevation: 2,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.2,
-    shadowRadius: 1.41,
-  },
-  emptyText: {
-    fontSize: 14,
-    color: '#6B7C97',
-    fontStyle: 'italic',
-  },
-  portfolioGrid: {
+    padding: SPACING.m,
     flexDirection: 'row',
-    flexWrap: 'wrap',
-  },
-  actionSection: {
-    marginBottom: 16,
-  },
-  actionButton: {
-    padding: 16,
-    borderRadius: 12,
-    marginBottom: 12,
-    elevation: 3,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
+    justifyContent: 'space-between',
+    borderTopWidth: 1,
+    borderTopColor: COLORS.border,
   },
   callButton: {
-    backgroundColor: '#0B3A6A',
+    flex: 0.35,
+    borderRadius: BORDER_RADIUS.m,
+    borderColor: COLORS.primary,
+    borderWidth: 1.5,
   },
   requestButton: {
-    backgroundColor: '#1D4ED8',
+    flex: 0.6,
+    borderRadius: BORDER_RADIUS.m,
+    backgroundColor: COLORS.primary,
   },
-  actionButtonText: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#FFF',
-    textAlign: 'center',
-  },
-  unavailableNote: {
-    fontSize: 14,
-    color: '#3B4A66',
-    textAlign: 'center',
-    fontStyle: 'italic',
+  buttonContent: {
+    height: 52,
   },
 });

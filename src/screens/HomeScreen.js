@@ -1,230 +1,299 @@
 import React from 'react';
 import {
   View,
-  Text,
   StyleSheet,
   TouchableOpacity,
   ScrollView,
   Dimensions,
+  Image,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { 
+  Text, 
+  Searchbar, 
+  Card, 
+  Button, 
+  IconButton, 
+  Avatar,
+  Surface
+} from 'react-native-paper';
 import { MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { COLORS, SPACING, TYPOGRAPHY, BORDER_RADIUS, SHADOWS } from '../theme';
 
 const { width } = Dimensions.get('window');
 
-export default function HomeScreen({ navigation }) {
+const HomeScreen = ({ navigation }) => {
+  const [searchQuery, setSearchQuery] = React.useState('');
+
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView contentContainerStyle={styles.content}>
+      <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
+        {/* Top Bar */}
         <View style={styles.topBar}>
-          <TouchableOpacity 
-            style={styles.loginLink} 
+          <View>
+            <Text variant="bodyMedium" style={{ color: COLORS.textSecondary }}>Welcome to</Text>
+            <View style={styles.logoTextContainer}>
+              <Text variant="headlineMedium" style={[styles.logoText, { color: COLORS.primary }]}>WorkMan</Text>
+              <Text variant="headlineMedium" style={[styles.logoText, { color: COLORS.accent }]}>GH</Text>
+            </View>
+          </View>
+          <IconButton
+            icon="account-circle-outline"
+            size={32}
+            iconColor={COLORS.primary}
             onPress={() => navigation.navigate('Login')}
-          >
-            <Text style={styles.loginLinkText}>Sign In</Text>
-          </TouchableOpacity>
+            style={styles.profileButton}
+          />
         </View>
 
-        <View style={styles.header}>
-          <View style={styles.logoContainer}>
-            <MaterialCommunityIcons name="tools" size={64} color="#0B3A6A" />
-          </View>
-          <Text style={styles.title}>WorkManGH</Text>
-          <Text style={styles.subtitle}>Professional help at your fingertips</Text>
-        </View>
+        {/* Search Bar */}
+        <Searchbar
+          placeholder="Plumber, Mason, Tiler..."
+          onChangeText={setSearchQuery}
+          value={searchQuery}
+          onIconPress={() => navigation.navigate('CategorySelection')}
+          onPressIn={() => navigation.navigate('CategorySelection')}
+          style={styles.searchBar}
+          elevation={1}
+        />
 
-        <View style={styles.buttonContainer}>
-          <TouchableOpacity
-            activeOpacity={0.8}
-            style={[styles.mainButton, styles.primaryButton]}
+        {/* Hero Card */}
+        <Card style={styles.heroCard} mode="contained">
+          <Card.Content style={styles.heroContent}>
+            <View style={styles.heroTextContainer}>
+              <Text variant="headlineLarge" style={styles.heroTitle}>Find Skilled{'\n'}Artisans Nearby</Text>
+              <Text variant="bodyMedium" style={styles.heroSubtitle}>
+                Verified professionals for your home and business needs.
+              </Text>
+              <Button 
+                mode="contained" 
+                buttonColor={COLORS.accent}
+                textColor={COLORS.primary}
+                onPress={() => navigation.navigate('CategorySelection')}
+                style={styles.heroButton}
+                labelStyle={{ fontWeight: 'bold' }}
+              >
+                Book Now
+              </Button>
+            </View>
+            <View style={styles.heroIconContainer}>
+              <MaterialCommunityIcons name="tools" size={100} color="rgba(255,255,255,0.15)" />
+            </View>
+          </Card.Content>
+        </Card>
+
+        {/* Quick Categories */}
+        <View style={styles.sectionHeader}>
+          <Text variant="titleLarge" style={styles.sectionTitle}>Top Categories</Text>
+          <Button 
+            mode="text" 
+            compact 
             onPress={() => navigation.navigate('CategorySelection')}
+            textColor={COLORS.primary}
           >
-            <View style={styles.buttonIcon}>
-              <MaterialIcons name="search" size={32} color="#FFF" />
-            </View>
-            <View>
-              <Text style={styles.buttonText}>Find an Artisan</Text>
-              <Text style={styles.buttonSubtext}>Browse skilled workers near you</Text>
-            </View>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            activeOpacity={0.8}
-            style={[styles.mainButton, styles.secondaryButton]}
-            onPress={() => navigation.navigate('ArtisanRegistration')}
-          >
-            <View style={styles.buttonIcon}>
-              <MaterialIcons name="person-add" size={32} color="#FFF" />
-            </View>
-            <View>
-              <Text style={styles.buttonText}>Register as Artisan</Text>
-              <Text style={styles.buttonSubtext}>Join our network of skilled workers</Text>
-            </View>
-          </TouchableOpacity>
+            View All
+          </Button>
         </View>
 
-        <View style={styles.infoSection}>
-          <Text style={styles.infoTitle}>How It Works</Text>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.categoriesScroll}>
+          {[
+            { id: 'plumber', name: 'Plumber', icon: 'wrench' },
+            { id: 'electrician', name: 'Electrician', icon: 'flash' },
+            { id: 'mason', name: 'Mason', icon: 'wall' },
+            { id: 'carpenter', name: 'Carpenter', icon: 'saw-blade' },
+          ].map((cat) => (
+            <Surface key={cat.id} style={styles.categoryCard} elevation={1}>
+              <TouchableOpacity 
+                style={styles.categoryTouch}
+                onPress={() => navigation.navigate('ArtisanList', { category: cat.id })}
+              >
+                <Avatar.Icon 
+                  size={56} 
+                  icon={cat.icon} 
+                  backgroundColor="#E8F1FF" 
+                  color={COLORS.primary} 
+                />
+                <Text variant="labelLarge" style={styles.categoryName}>{cat.name}</Text>
+              </TouchableOpacity>
+            </Surface>
+          ))}
+        </ScrollView>
 
-          <View style={styles.infoCard}>
-            <View style={[styles.stepNumber, { backgroundColor: '#0B3A6A' }]}>
-              <Text style={styles.stepText}>1</Text>
+        {/* Artisan CTA Card */}
+        <Card style={styles.artisanCard} mode="contained">
+          <Card.Content style={styles.artisanContent}>
+            <View style={styles.artisanTextContainer}>
+              <Text variant="titleLarge" style={{ fontWeight: 'bold' }}>Are you an Artisan?</Text>
+              <Text variant="bodyMedium" style={{ marginTop: SPACING.xs, color: COLORS.textSecondary }}>
+                Reach more customers and grow your professional business.
+              </Text>
+              <Button 
+                mode="contained" 
+                onPress={() => navigation.navigate('ArtisanRegistration')}
+                style={styles.registerButton}
+              >
+                Register Now
+              </Button>
             </View>
-            <View style={styles.infoContent}>
-              <Text style={styles.infoHeading}>Choose Category</Text>
-              <Text style={styles.infoText}>Select the type of artisan you need</Text>
-            </View>
+            <Avatar.Icon 
+              size={64} 
+              icon="briefcase-variant-outline" 
+              backgroundColor="transparent" 
+              color={COLORS.accent} 
+            />
+          </Card.Content>
+        </Card>
+
+        {/* Trust Badges */}
+        <View style={styles.trustRow}>
+          <View style={styles.trustItem}>
+            <MaterialIcons name="verified" size={24} color={COLORS.success} />
+            <Text variant="labelSmall" style={styles.trustText}>Verified Pros</Text>
           </View>
-
-          <View style={styles.infoCard}>
-            <View style={[styles.stepNumber, { backgroundColor: '#1D4ED8' }]}>
-              <Text style={styles.stepText}>2</Text>
-            </View>
-            <View style={styles.infoContent}>
-              <Text style={styles.infoHeading}>View Nearby Artisans</Text>
-              <Text style={styles.infoText}>See skilled workers near your location</Text>
-            </View>
+          <View style={styles.trustItem}>
+            <MaterialIcons name="security" size={24} color={COLORS.success} />
+            <Text variant="labelSmall" style={styles.trustText}>Secure Escrow</Text>
           </View>
-
-          <View style={styles.infoCard}>
-            <View style={[styles.stepNumber, { backgroundColor: '#10B981' }]}>
-              <Text style={styles.stepText}>3</Text>
-            </View>
-            <View style={styles.infoContent}>
-              <Text style={styles.infoHeading}>Call & Connect</Text>
-              <Text style={styles.infoText}>Contact artisans directly via phone</Text>
-            </View>
+          <View style={styles.trustItem}>
+            <MaterialIcons name="star" size={24} color={COLORS.accent} />
+            <Text variant="labelSmall" style={styles.trustText}>Top Rated</Text>
           </View>
         </View>
       </ScrollView>
     </SafeAreaView>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#EEF2F8',
+    backgroundColor: COLORS.background,
   },
   content: {
-    padding: 20,
+    padding: SPACING.m,
   },
   topBar: {
     flexDirection: 'row',
-    justifyContent: 'flex-end',
-    marginBottom: 10,
-  },
-  loginLink: {
-    padding: 8,
-  },
-  loginLinkText: {
-    color: '#0B3A6A',
-    fontWeight: 'bold',
-  },
-  header: {
-    marginBottom: 30,
+    justifyContent: 'space-between',
     alignItems: 'center',
+    marginBottom: SPACING.l,
   },
-  title: {
-    fontSize: 42,
-    fontWeight: 'bold',
-    color: '#0B3A6A',
-    marginBottom: 10,
-  },
-  subtitle: {
-    fontSize: 18,
-    color: '#3B4A66',
-    textAlign: 'center',
-  },
-  buttonContainer: {
-    marginBottom: 30,
-  },
-  button: {
-    padding: 20,
-    borderRadius: 12,
-  },
-  mainButton: {
+  logoTextContainer: {
     flexDirection: 'row',
-    alignItems: 'center',
-    padding: 24,
-    borderRadius: 20,
-    marginBottom: 15,
-    elevation: 6,
-    shadowColor: '#000',
   },
-  
-  buttonIcon: {
-    width: 56,
-    height: 56,
-    borderRadius: 18,
-    backgroundColor: 'rgba(255,255,255,0.2)',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 20,
+  logoText: {
+    fontWeight: '900',
+    letterSpacing: -1,
   },
-  primaryButton: {
-    backgroundColor: '#0B3A6A',
+  profileButton: {
+    margin: 0,
   },
-  secondaryButton: {
-    backgroundColor: '#1D4ED8',
-  },
-  buttonText: {
-    fontSize: 22,
-    fontWeight: 'bold',
-    color: '#FFF',
-    marginBottom: 2,
-  },
-  buttonSubtext: {
-    fontSize: 14,
-    color: '#FFF',
-    opacity: 0.9,
-  },
-  infoSection: {
-    marginTop: 20,
-    paddingBottom: 20,
-  },
-  infoTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#0B3A6A',
-    marginBottom: 15,
-  },
-  infoCard: {
-    flexDirection: 'row',
+  searchBar: {
+    marginBottom: SPACING.l,
+    borderRadius: BORDER_RADIUS.m,
     backgroundColor: '#FFF',
-    padding: 18,
-    borderRadius: 16,
-    marginBottom: 12,
-    elevation: 2,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
   },
-  stepNumber: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
+  heroCard: {
+    backgroundColor: COLORS.primary,
+    borderRadius: BORDER_RADIUS.l,
+    marginBottom: SPACING.xl,
+    overflow: 'hidden',
+  },
+  heroContent: {
+    flexDirection: 'row',
+    padding: SPACING.l,
+    minHeight: 180,
+  },
+  heroTextContainer: {
+    flex: 1,
+    zIndex: 1,
+  },
+  heroTitle: {
+    color: '#FFF',
+    fontWeight: 'bold',
+    lineHeight: 38,
+  },
+  heroSubtitle: {
+    color: '#E0E0E0',
+    marginTop: SPACING.s,
+    marginBottom: SPACING.m,
+  },
+  heroButton: {
+    alignSelf: 'flex-start',
+    borderRadius: BORDER_RADIUS.round,
+  },
+  heroIconContainer: {
+    position: 'absolute',
+    right: -10,
+    bottom: -10,
+  },
+  sectionHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: SPACING.m,
+  },
+  sectionTitle: {
+    fontWeight: 'bold',
+    color: COLORS.primary,
+  },
+  categoriesScroll: {
+    marginBottom: SPACING.xl,
+    paddingLeft: 2, // For shadow
+  },
+  categoryCard: {
+    backgroundColor: '#FFF',
+    borderRadius: BORDER_RADIUS.l,
+    marginRight: SPACING.m,
+    width: 110,
+    height: 120,
+    marginBottom: 5,
+  },
+  categoryTouch: {
+    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    marginRight: 15,
+    padding: SPACING.s,
   },
-  stepText: {
-    color: '#FFF',
-    fontSize: 20,
-    fontWeight: 'bold',
+  categoryName: {
+    marginTop: SPACING.s,
+    fontWeight: '600',
+    color: COLORS.primary,
   },
-  infoContent: {
+  artisanCard: {
+    backgroundColor: '#E8F1FF',
+    borderRadius: BORDER_RADIUS.l,
+    marginBottom: SPACING.xl,
+  },
+  artisanContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: SPACING.l,
+  },
+  artisanTextContainer: {
     flex: 1,
   },
-  infoHeading: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#0B1F3B',
-    marginBottom: 4,
+  registerButton: {
+    alignSelf: 'flex-start',
+    marginTop: SPACING.m,
+    borderRadius: BORDER_RADIUS.round,
   },
-  infoText: {
-    fontSize: 14,
-    color: '#3B4A66',
+  trustRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    paddingVertical: SPACING.l,
+    borderTopWidth: 1,
+    borderTopColor: COLORS.border,
+    marginBottom: SPACING.l,
+  },
+  trustItem: {
+    alignItems: 'center',
+  },
+  trustText: {
+    marginTop: SPACING.xs,
+    color: COLORS.text,
+    fontWeight: '600',
   },
 });
+
+export default HomeScreen;

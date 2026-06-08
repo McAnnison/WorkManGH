@@ -1,25 +1,30 @@
 import React, { useState } from 'react';
 import {
-  View,
-  Text,
   StyleSheet,
-  TouchableOpacity,
-  TextInput,
-  Alert,
-  ActivityIndicator,
+  View,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
+  Alert,
 } from 'react-native';
+import { 
+  TextInput, 
+  Button, 
+  Text, 
+  IconButton, 
+  ActivityIndicator,
+  Surface
+} from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { MaterialIcons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { COLORS, SPACING, TYPOGRAPHY, BORDER_RADIUS, SHADOWS } from '../theme';
 
-const API_URL = 'http://192.168.56.1:3000'; // Match your backend URL
+const API_URL = 'http://192.168.56.1:3000';
 
-export default function LoginScreen({ navigation }) {
+const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const handleLogin = async () => {
@@ -39,21 +44,21 @@ export default function LoginScreen({ navigation }) {
       const data = await response.json();
 
       if (response.ok) {
-        // 1. Store session data
         await AsyncStorage.setItem('userToken', data.token);
         await AsyncStorage.setItem('userRole', data.user.role);
         
-        // 2. Route based on role
         if (data.user.role === 'ARTISAN') {
           navigation.replace('ArtisanDashboard');
         } else if (data.user.role === 'USER') {
           navigation.replace('UserDashboard');
+        } else {
+          navigation.replace('Home');
         }
       } else {
         Alert.alert('Login Failed', data.error || 'Invalid credentials');
       }
     } catch (error) {
-      Alert.alert('Error', 'Could not connect to the server. Please check your connection.');
+      Alert.alert('Error', 'Could not connect to the server.');
     } finally {
       setLoading(false);
     }
@@ -66,99 +71,138 @@ export default function LoginScreen({ navigation }) {
         style={{ flex: 1 }}
       >
         <ScrollView contentContainerStyle={styles.content}>
-          <TouchableOpacity 
-            style={styles.backButton}
+          <IconButton
+            icon="arrow-left"
+            size={28}
+            iconColor={COLORS.primary}
             onPress={() => navigation.goBack()}
-          >
-            <MaterialIcons name="arrow-back" size={28} color="#0B3A6A" />
-          </TouchableOpacity>
+            style={styles.backButton}
+          />
 
           <View style={styles.header}>
-            <Text style={styles.title}>Welcome Back</Text>
-            <Text style={styles.subtitle}>Sign in to access your WorkManGH account</Text>
+            <Text variant="headlineLarge" style={styles.title}>Welcome Back</Text>
+            <Text variant="bodyLarge" style={styles.subtitle}>
+              Sign in to continue your journey with WorkManGH.
+            </Text>
           </View>
 
-          <View style={styles.form}>
-            <View style={styles.inputGroup}>
-              <Text style={styles.label}>Email Address</Text>
-              <TextInput
-                style={styles.input}
-                placeholder="email@example.com"
-                value={email}
-                onChangeText={setEmail}
-                keyboardType="email-address"
-                autoCapitalize="none"
-              />
-            </View>
+          <Surface style={styles.form} elevation={0}>
+            <TextInput
+              label="Email Address"
+              value={email}
+              onChangeText={setEmail}
+              mode="outlined"
+              keyboardType="email-address"
+              autoCapitalize="none"
+              style={styles.input}
+              outlineColor={COLORS.border}
+              activeOutlineColor={COLORS.primary}
+              left={<TextInput.Icon icon="email-outline" />}
+            />
 
-            <View style={styles.inputGroup}>
-              <Text style={styles.label}>Password</Text>
-              <TextInput
-                style={styles.input}
-                placeholder="********"
-                value={password}
-                onChangeText={setPassword}
-                secureTextEntry
-              />
-            </View>
+            <TextInput
+              label="Password"
+              value={password}
+              onChangeText={setPassword}
+              mode="outlined"
+              secureTextEntry={!showPassword}
+              style={styles.input}
+              outlineColor={COLORS.border}
+              activeOutlineColor={COLORS.primary}
+              left={<TextInput.Icon icon="lock-outline" />}
+              right={
+                <TextInput.Icon 
+                  icon={showPassword ? "eye-off" : "eye"} 
+                  onPress={() => setShowPassword(!showPassword)}
+                />
+              }
+            />
 
-            <TouchableOpacity 
-              style={styles.loginButton}
+            <Button
+              mode="contained"
               onPress={handleLogin}
+              loading={loading}
               disabled={loading}
+              style={styles.loginButton}
+              labelStyle={styles.buttonLabel}
+              contentStyle={styles.buttonContent}
             >
-              {loading ? (
-                <ActivityIndicator color="#FFF" />
-              ) : (
-                <Text style={styles.loginButtonText}>Login</Text>
-              )}
-            </TouchableOpacity>
+              Login
+            </Button>
 
             <View style={styles.footer}>
-              <Text style={styles.footerText}>Don't have an account? </Text>
-              <TouchableOpacity onPress={() => Alert.alert('Signup', 'Redirecting to registration...')}>
-                <Text style={styles.signupLink}>Sign Up</Text>
+              <Text variant="bodyMedium" style={{ color: COLORS.textSecondary }}>
+                Don't have an account?{' '}
+              </Text>
+              <TouchableOpacity onPress={() => navigation.navigate('SignUp')}>
+                <Text variant="bodyMedium" style={styles.signupLink}>
+                  Sign Up
+                </Text>
               </TouchableOpacity>
             </View>
-          </View>
+          </Surface>
         </ScrollView>
       </KeyboardAvoidingView>
     </SafeAreaView>
   );
-}
+};
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#EEF2F8' },
-  content: { padding: 20 },
-  backButton: { marginBottom: 20 },
-  header: { marginBottom: 40 },
-  title: { fontSize: 32, fontWeight: 'bold', color: '#0B3A6A' },
-  subtitle: { fontSize: 16, color: '#6B7C97', marginTop: 5 },
-  form: { marginTop: 20 },
-  inputGroup: { marginBottom: 20 },
-  label: { fontSize: 14, fontWeight: 'bold', color: '#0B1F3B', marginBottom: 8 },
+  container: { 
+    flex: 1, 
+    backgroundColor: COLORS.background 
+  },
+  content: { 
+    padding: SPACING.l 
+  },
+  backButton: { 
+    marginLeft: -SPACING.s,
+    marginBottom: SPACING.m 
+  },
+  header: { 
+    marginBottom: SPACING.xl 
+  },
+  title: {
+    fontWeight: 'bold',
+    color: COLORS.primary,
+  },
+  subtitle: {
+    color: COLORS.textSecondary,
+    marginTop: SPACING.s,
+  },
+  form: { 
+    backgroundColor: 'transparent'
+  },
   input: {
+    marginBottom: SPACING.m,
     backgroundColor: '#FFF',
-    borderRadius: 12,
-    padding: 15,
-    fontSize: 16,
-    borderWidth: 1,
-    borderColor: '#CBD5E1',
   },
   loginButton: {
-    backgroundColor: '#0B3A6A',
-    borderRadius: 12,
-    padding: 18,
-    alignItems: 'center',
-    marginTop: 10,
-    elevation: 4,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
+    marginTop: SPACING.m,
+    borderRadius: BORDER_RADIUS.m,
   },
-  loginButtonText: { color: '#FFF', fontSize: 18, fontWeight: 'bold' },
-  footer: { flexDirection: 'row', justifyContent: 'center', marginTop: 30 },
-  footerText: { color: '#6B7C97', fontSize: 14 },
-  signupLink: { color: '#0B3A6A', fontSize: 14, fontWeight: 'bold' },
+  buttonContent: {
+    height: 56,
+  },
+  buttonLabel: {
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  footer: { 
+    flexDirection: 'row', 
+    justifyContent: 'center', 
+    marginTop: SPACING.xl 
+  },
+  signupLink: { 
+    color: COLORS.primary, 
+    fontWeight: 'bold' 
+  },
 });
+
+const TouchableOpacity = ({ children, onPress }) => (
+  <View onStartShouldSetResponder={() => { onPress(); return true; }}>
+    {children}
+  </View>
+);
+
+export default LoginScreen;

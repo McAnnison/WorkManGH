@@ -6,7 +6,7 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql" // You can change this to "sqlite" or "mysql"
+  provider = "postgresql"
 }
 
 model User {
@@ -19,8 +19,16 @@ model User {
   role         Role            @default(USER)
   createdAt    DateTime        @default(now())
   updatedAt    DateTime        @updatedAt
+  
   artisan      ArtisanProfile?
-  reviews      Review[]
+  verifications Verification[]
+  
+  // Jobs as customer
+  jobsAsCustomer Job[]           @relation("CustomerJobs")
+  
+  // Reviews
+  reviewsGiven    Review[]       @relation("ReviewsGiven")
+  reviewsReceived Review[]       @relation("ReviewsReceived")
 }
 
 enum Role {
@@ -41,7 +49,15 @@ model ArtisanProfile {
   longitude       Float
   address         String
   available       Boolean  @default(true)
-  reviews         Review[]
+  
+  // New trust fields
+  isVerified      Boolean  @default(false)
+  reputationScore Int      @default(0) // 0-100
+  baseRate        Decimal?
+  
+  // Marketplace relations
+  jobs            Job[]
+  quotes          Quote[]
 }
 
 model Category {
@@ -50,14 +66,117 @@ model Category {
   slug     String           @unique
   icon     String?
   artisans ArtisanProfile[]
+  jobs     Job[]
+}
+
+model Verification {
+  id          String             @id @default(cuid())
+  user        User               @relation(fields: [userId], references: [id])
+  userId      String
+  idType      VerificationIdType @default(GHANA_CARD)
+  idNumber    String             // Should be encrypted in DB
+  idImageUrl  String
+  selfieUrl   String
+  status      VerificationStatus @default(PENDING)
+  adminNotes  String?
+  verifiedAt  DateTime?
+  createdAt   DateTime           @default(now())
+}
+
+enum VerificationIdType {
+  GHANA_CARD
+  PASSPORT
+  VOTER_ID
+}
+
+enum VerificationStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+model Job {
+  id             String      @id @default(cuid())
+  customer       User        @relation("CustomerJobs", fields: [customerId], references: [id])
+  customerId     String
+  artisan        ArtisanProfile? @relation(fields: [artisanId], references: [id])
+  artisanId      String?
+  category       Category    @relation(fields: [categoryId], references: [id])
+  categoryId     String
+  
+  title          String
+  description    String
+  status         JobStatus   @default(PENDING)
+  budgetRange    String?
+  finalPrice     Decimal?
+  
+  // Escrow & Payment
+  escrowStatus   EscrowStatus @default(NONE)
+  
+  // Location
+  latitude       Float
+  longitude      Float
+  address        String
+  
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+  
+  quotes         Quote[]
+  reviews        Review[]
+}
+
+enum JobStatus {
+  PENDING
+  QUOTED
+  ACCEPTED
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+
+enum EscrowStatus {
+  NONE
+  FUNDED
+  RELEASED
+  DISPUTED
+  REFUNDED
+}
+
+model Quote {
+  id                String         @id @default(cuid())
+  job               Job            @relation(fields: [jobId], references: [id])
+  jobId             String
+  artisan           ArtisanProfile @relation(fields: [artisanId], references: [id])
+  artisanId         String
+  
+  price             Decimal
+  notes             String?
+  estimatedDuration String?
+  status            QuoteStatus    @default(PENDING)
+  
+  createdAt         DateTime       @default(now())
+}
+
+enum QuoteStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
 }
 
 model Review {
-  id               String         @id @default(cuid())
-  rating           Int
-  comment          String?
-  artisan          ArtisanProfile @relation(fields: [artisanProfileId], references: [id])
-  artisanProfileId String
-  customer         User           @relation(fields: [customerId], references: [id])
-  customerId       String
+  id         String   @id @default(cuid())
+  job        Job      @relation(fields: [jobId], references: [id])
+  jobId      String
+  
+  reviewer   User     @relation("ReviewsGiven", fields: [reviewerId], references: [id])
+  reviewerId String
+  
+  reviewee   User     @relation("ReviewsReceived", fields: [revieweeId], references: [id])
+  revieweeId String
+  
+  rating     Int
+  comment    String?
+  sentiment  String? // AI Label
+  
+  createdAt  DateTime @default(now())
 }
