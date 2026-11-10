@@ -17,9 +17,9 @@ import {
 } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import API_URL from '../config/api';
 import { COLORS, SPACING, TYPOGRAPHY, BORDER_RADIUS, SHADOWS } from '../theme';
 
-const API_URL = 'http://192.168.56.1:3000';
 
 const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState('');
