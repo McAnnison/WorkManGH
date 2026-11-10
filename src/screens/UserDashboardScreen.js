@@ -1,10 +1,10 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { View, Text, StyleSheet, ActivityIndicator, Alert, ScrollView, Image, TouchableOpacity, RefreshControl } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import API_URL from '../config/api';
 import { MaterialIcons } from '@expo/vector-icons';
 
 // TODO: Move API_URL to a separate config file or environment variable
-const API_URL = 'http://192.168.56.1:3000';
 
 const UserDashboardScreen = ({ navigation }) => {
   const [loading, setLoading] = useState(true);
