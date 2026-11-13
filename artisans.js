@@ -87,12 +87,16 @@ router.get('/dashboard', authMiddleware, async (req, res) => {
       where: { userId },
       include: {
         user: {
-          select: { name: true, email: true, phone: true, profileImage: true, role: true }
+          select: {
+            name: true,
+            email: true,
+            phone: true,
+            profileImage: true,
+            role: true,
+            reviewsReceived: { select: { rating: true } }
+          }
         },
-        category: true,
-        _count: {
-          select: { reviews: true }
-        }
+        category: true
       }
     });
 

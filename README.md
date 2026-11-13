@@ -1,177 +1,95 @@
-# WorkManGH - Artisan Marketplace & Locator App
+# WorkManGH — Artisan Marketplace & Locator App
 
-![WorkManGH](https://img.shields.io/badge/Platform-React%20Native-blue)
-![Expo](https://img.shields.io/badge/Expo-~51.0.0-green)
+WorkManGH connects customers in Ghana with local skilled artisans such as masons, carpenters, plumbers, painters, electricians, welders, tilers, and mechanics. The mobile application supports category-based discovery, location-aware listings, artisan profiles, direct contact, and artisan onboarding.
 
-An Artisan Marketplace & Locator App that connects skilled local artisans (masons, carpenters, plumbers, painters, electricians, welders, tilers, etc.) with people who need work done, fast and reliably.
+## Current technology
 
-Think of it as **"Uber meets skilled labor"**, but grounded in Ghanaian realities like location, trust, and phone calls.
+- **Mobile:** React Native 0.81.5, Expo 54, React Navigation, React Native Paper
+- **Backend:** Node.js, Express 5
+- **Database:** PostgreSQL
+- **ORM:** Prisma 7 with the PostgreSQL driver adapter
+- **Location:** Expo Location
 
-## 🎯 Features
+## Current capabilities
 
-### For Customers (Job Seekers)
-- **Browse Artisans by Category**: Select from 8 different artisan categories
-- **Location-Based Search**: Find artisans near you using GPS
-- **View Detailed Profiles**: See artisan information including:
-  - Name & profile photo
-  - Skills & experience level
-  - Ratings & reviews
-  - Contact information
-- **Direct Communication**: Call artisans directly with one tap
-- **Send Job Requests**: Quick job request functionality
+- Browse artisan categories.
+- Retrieve artisan listings with category and availability filters.
+- View artisan profile information and location coordinates.
+- Create an account and sign in using the API.
+- Register an authenticated account as an artisan.
+- Update artisan availability and retrieve an artisan dashboard.
+- Calculate nearby distances on the client.
 
-### For Artisans
-- **Simple Registration**: Register with basic information
-  - Name
-  - Phone number
-  - Skill category
-  - Years of experience
-  - Location
-- **Profile Management**: 
-  - Upload profile photo
-  - Add portfolio photos (past work)
-  - Write bio/description
-- **Availability Toggle**: Mark yourself as available or busy
-- **Build Reputation**: Receive ratings and reviews from customers
+Some user-facing screens and marketplace features are still under development. Do not assume that every dashboard, job, payment, messaging, review-submission, or identity-verification flow is production-ready merely because related data models or UI elements exist.
 
-## 🔧 Tech Stack
+## Getting started
 
-- **Framework**: React Native with Expo
-- **Navigation**: React Navigation (Stack Navigator)
-- **Location Services**: expo-location
-- **Image Handling**: expo-image-picker
-- **Platform Support**: iOS, Android, and Web
+### 1. Install
 
-## 📱 Artisan Categories
-
-- 🧱 Mason
-- 🪚 Carpenter
-- 🔧 Plumber
-- 🎨 Painter
-- ⚡ Electrician
-- 🔥 Welder
-- 🏗️ Tiler
-- 🔩 Mechanic
-
-## 🚀 Getting Started
-
-### Prerequisites
-
-- Node.js (v14 or higher)
-- npm or yarn
-- Expo CLI (optional, but recommended)
-
-### Installation
-
-1. Clone the repository:
-```bash
-git clone https://github.com/McAnnison/WorkManGH.git
-cd WorkManGH
-```
-
-2. Install dependencies:
 ```bash
 npm install
 ```
 
-3. Start the development server:
+### 2. Configure environment
+
+```bash
+cp .env.example .env
+```
+
+Set `DATABASE_URL` to your PostgreSQL connection string and replace `JWT_SECRET` with a long random secret. Keep the real `.env` file private and out of version control.
+
+### 3. Generate Prisma Client and migrate
+
+```bash
+npm run prisma:generate
+npm run prisma:migrate:dev -- --name init
+```
+
+Only create an initial migration if the database does not already have migration history.
+
+### 4. Start the API
+
+```bash
+npm run dev:api
+```
+
+The canonical backend entry point is `server.js`. Verify it at `http://localhost:3000/health`.
+
+### 5. Start the Expo app
+
+In another terminal:
+
 ```bash
 npm start
 ```
 
-4. Run on your device:
-   - Install Expo Go app on your phone
-   - Scan the QR code displayed in the terminal
-   
-   Or run on emulator/simulator:
-   - For Android: `npm run android`
-   - For iOS: `npm run ios`
-   - For Web: `npm run web`
+For a physical Android device, set `EXPO_PUBLIC_API_URL` in `.env` to your computer's LAN address, for example `http://192.168.1.10:3000`, then restart Expo. See [DEVELOPMENT.md](DEVELOPMENT.md) for emulator, device, database, and workflow details.
 
-## 📂 Project Structure
+## Project structure
 
 ```
 WorkManGH/
-├── App.js                          # Main app component with navigation
+├── App.js
+├── server.js                 # Canonical Express API entry point
+├── auth.js                   # Authentication routes and middleware
+├── artisans.js               # Artisan routes
+├── categories.js             # Category route module
+├── db.js                     # Prisma/PostgreSQL client
+├── schema.prisma
+├── prisma.config.ts
 ├── src/
+│   ├── config/api.js          # Shared mobile API URL
 │   ├── screens/
-│   │   ├── HomeScreen.js           # Landing page
-│   │   ├── CategorySelectionScreen.js  # Select artisan category
-│   │   ├── ArtisanListScreen.js    # List of artisans by category
-│   │   ├── ArtisanDetailScreen.js  # Artisan profile details
-│   │   ├── ArtisanRegistrationScreen.js  # Artisan registration form
-│   │   └── ArtisanProfileScreen.js # Artisan's own profile management
 │   └── data/
-│       └── artisanData.js          # Sample data and utility functions
-├── assets/                         # App icons and images
-├── app.json                        # Expo configuration
-├── package.json                    # Dependencies
-└── babel.config.js                 # Babel configuration
+├── .env.example
+├── package.json
+└── DEVELOPMENT.md
 ```
 
-## 🎨 User Flow
+## Development workflow
 
-### Customer Journey
-1. Open app → Home screen
-2. Tap "Find an Artisan"
-3. Select category (e.g., Plumber)
-4. View nearby artisans with GPS-based sorting
-5. Tap on an artisan to view full profile
-6. Call artisan or send job request
-7. Artisan accepts and comes to work
+Use GitHub issues to define scope and acceptance criteria. Implement each issue on a dedicated branch, test the changes, open a linked pull request, and review it before merging. See [DEVELOPMENT.md](DEVELOPMENT.md).
 
-### Artisan Journey
-1. Open app → Home screen
-2. Tap "Register as Artisan"
-3. Fill in registration form (name, phone, category, experience)
-4. Upload photos (profile & portfolio)
-5. Complete registration
-6. Manage profile and toggle availability
-7. Receive calls/requests from customers
-8. Build reputation through ratings
+## License
 
-## 🌍 Permissions Required
-
-- **Location**: To find nearby artisans (GPS-based search)
-- **Phone/Calls**: To make direct calls to artisans
-- **Camera/Photos**: To upload profile and portfolio photos
-
-## 📊 Sample Data
-
-The app includes sample artisan data for demonstration purposes. In a production environment, this would be replaced with a backend API and database.
-
-## 🔮 Future Enhancements
-
-- Backend API integration
-- User authentication
-- Real-time job request notifications
-- In-app messaging
-- Payment integration
-- Review and rating system implementation
-- Job history tracking
-- Artisan verification system
-- Push notifications
-- Photo upload functionality
-- Multi-language support (English, Twi, Ga, etc.)
-
-## 🤝 Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
-
-## 📄 License
-
-This project is licensed under the MIT License.
-
-## 👥 Authors
-
-WorkManGH Team
-
-## 🙏 Acknowledgments
-
-- Built for the Ghanaian artisan community
-- Inspired by the need to connect skilled workers with customers efficiently
-- Designed with mobile-first approach for accessibility
-
----
-
-**WorkManGH** - Empowering artisans who normally depend on roadside visibility or word of mouth.
+MIT

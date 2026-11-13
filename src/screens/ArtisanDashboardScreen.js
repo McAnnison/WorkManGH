@@ -13,11 +13,11 @@ import {
   SafeAreaView 
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import API_URL from '../config/api';
 import { MaterialIcons } from '@expo/vector-icons';
 import { COLORS, SPACING, TYPOGRAPHY, BORDER_RADIUS, SHADOWS } from '../theme';
 
 // TODO: Move API_URL to a separate config file or environment variable
-const API_URL = 'http://192.168.56.1:3000';
 
 const ArtisanDashboardScreen = ({ navigation }) => {
   const [loading, setLoading] = useState(true);

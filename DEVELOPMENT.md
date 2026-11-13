@@ -1,357 +1,129 @@
-# WorkManGH - Development Guide
-
-## Overview
-
-WorkManGH is a mobile application built with React Native and Expo that connects skilled local artisans with customers who need their services. This guide provides detailed information for developers working on the project.
+# WorkManGH Development Guide
 
 ## Architecture
 
-### Technology Stack
+WorkManGH is a React Native application built with Expo 54 and React Native 0.81.5. The mobile client uses React Navigation and React Native Paper. The API is a Node.js/Express service backed by PostgreSQL through Prisma 7 and the Prisma PostgreSQL driver adapter.
 
-- **Framework**: React Native 0.74.5
-- **Platform**: Expo ~51.0.0
-- **UI Navigation**: React Navigation (Stack Navigator)
-- **State Management**: React Hooks & TanStack Query (Pending)
-- **Backend**: Node.js + Express
-- **Database**: PostgreSQL
-- **ORM**: Prisma
-- **Location Services**: expo-location
-- **Image Handling**: expo-image-picker
-- **Deep Linking**: expo-linking
-- **Database ORM**: Prisma (Pending Integration)
+### Repository layout
 
-### Project Structure
+- `App.js` — Expo application entry point.
+- `src/screens/` — mobile screens.
+- `src/config/api.js` — shared mobile API base URL.
+- `src/data/` — sample data and client utilities.
+- `server.js` — **canonical backend entry point**.
+- `auth.js`, `artisans.js` — Express route modules.
+- `categories.js` — category route module retained for modular routing; the canonical server currently exposes the category endpoint directly.
+- `db.js` — shared Prisma client and PostgreSQL adapter.
+- `schema.prisma` — database schema.
+- `prisma.config.ts` — Prisma CLI datasource and migration configuration.
 
-```
-WorkManGH/
-├── App.js                              # Root component with navigation setup
-├── src/
-│   ├── screens/                        # Screen components
-│   │   ├── HomeScreen.js              # Landing page with two main actions
-│   │   ├── CategorySelectionScreen.js # Grid view of artisan categories
-│   │   ├── ArtisanListScreen.js       # GPS-sorted list of artisans
-│   │   ├── ArtisanDetailScreen.js     # Full artisan profile with call action
-│   │   ├── ArtisanRegistrationScreen.js # Registration form for artisans
-│   │   └── ArtisanProfileScreen.js    # Artisan's own profile management
-│   └── data/
-│       └── artisanData.js             # Sample data and utility functions
-├── assets/                             # App icons and images
-├── app.json                           # Expo configuration
-├── package.json                       # Dependencies and scripts
-└── babel.config.js                    # Babel configuration
-```
+Do not start the API using the removed legacy `index.js`. Use the scripts below.
 
-## Screen Descriptions
+## Requirements
 
-### 1. HomeScreen
-**Path**: `src/screens/HomeScreen.js`
+- Node.js 20 LTS or newer (Node 22 LTS recommended).
+- npm.
+- PostgreSQL database (local or hosted).
+- Expo Go or an Android/iOS development environment for mobile testing.
 
-Landing screen with two primary actions:
-- Find an Artisan (customer journey)
-- Register as Artisan (artisan journey)
+## Installation and environment
 
-Includes "How It Works" section explaining the app flow.
+1. Install dependencies:
 
-### 2. CategorySelectionScreen
-**Path**: `src/screens/CategorySelectionScreen.js`
+   ```bash
+   npm install
+   ```
 
-Displays a grid of artisan categories (8 categories):
-- Mason, Carpenter, Plumber, Painter
-- Electrician, Welder, Tiler, Mechanic
+2. Create your local environment file:
 
-Each category card shows an emoji icon and name.
+   ```bash
+   cp .env.example .env
+   ```
 
-### 3. ArtisanListScreen
-**Path**: `src/screens/ArtisanListScreen.js`
+3. Edit `.env` and provide your PostgreSQL connection string and a long, random JWT secret. Never commit `.env` or share its contents.
 
-**Key Features**:
-- Requests location permission on mount
-- Uses GPS to sort artisans by distance
-- Displays artisan cards with:
-  - Name and profile placeholder
-  - Location address
-  - Rating and review count
-  - Experience in years
-  - Distance from user
-  - Availability status
+   - `DATABASE_URL` — PostgreSQL connection string.
+   - `JWT_SECRET` — secret used to sign and verify authentication tokens.
+   - `PORT` — optional API port; defaults to `3000`.
+   - `EXPO_PUBLIC_API_URL` — API base URL exposed to the Expo client. This is a public URL, not a secret.
 
-**Data Flow**:
-1. Receives `category` from navigation params
-2. Fetches artisans via API: `GET /api/artisans?category={id}`
-3. Sorts results locally using GPS coordinates
-4. Renders list
+4. Generate the Prisma client:
 
-## Backend Architecture (Collaborative)
+   ```bash
+   npm run prisma:generate
+   ```
 
-### 1. Database Syncing
-Developers should use the shared PostgreSQL instance provided in the `.env` file. Run `npx prisma generate` after any schema changes.
+5. Apply database migrations during development (after configuring a valid database):
 
-### 2. API Documentation
-We use Swagger for endpoint documentation. Access it at `http://localhost:3000/api-docs` during local development.
+   ```bash
+   npm run prisma:migrate:dev -- --name init
+   ```
 
-### 3. Git Workflow
-Feature branches are mandatory. Backend changes must include updated Prisma migrations.
+   If the database already has a migration history, use the normal migration workflow rather than creating a second initial migration.
 
-### 4. ArtisanDetailScreen
-**Path**: `src/screens/ArtisanDetailScreen.js`
+## Running the services
 
-Detailed artisan profile with:
-- Profile photo (placeholder with initial)
-- Name, category, rating
-- Availability badge
-- Contact information (location, phone, experience)
-- Bio/About section
-- Portfolio section (placeholder)
-- Action buttons:
-  - Call Now (uses `Linking.openURL('tel:...')`)
-  - Send Job Request (placeholder)
+Run the mobile app and API in separate terminals.
 
-### 5. ArtisanRegistrationScreen
-**Path**: `src/screens/ArtisanRegistrationScreen.js`
+### Mobile app
 
-Registration form with validation:
-- **Required fields**: Name, Phone, Category, Experience
-- **Optional fields**: Bio
-- **Features**:
-  - Horizontal scrollable category chips
-  - Phone number validation
-  - Experience number validation
-  - Photo upload placeholder
-
-### 6. ArtisanProfileScreen
-**Path**: `src/screens/ArtisanProfileScreen.js`
-
-Artisan's own profile management:
-- View profile statistics (experience, reviews, rating)
-- Toggle availability status (Available/Busy)
-- Edit profile (placeholder)
-- Manage photos (placeholder)
-- Tips for success section
-
-## Data Layer
-
-### artisanData.js
-
-**Constants**:
-- `ARTISAN_CATEGORIES`: Array of 8 category objects
-- `SAMPLE_ARTISANS`: Array of 8 sample artisan profiles
-
-**Utility Functions**:
-
-#### `getArtisansByCategory(category)`
-Filters artisans by category ID.
-
-```javascript
-const plumbers = getArtisansByCategory('plumber');
-```
-
-#### `calculateDistance(lat1, lon1, lat2, lon2)`
-Uses Haversine formula to calculate distance between two GPS coordinates in kilometers.
-
-```javascript
-const km = calculateDistance(5.6037, -0.1870, 5.6100, -0.1900);
-```
-
-#### `getNearbyArtisans(category, userLat, userLon)`
-Returns artisans in a category, sorted by distance from user location.
-
-```javascript
-const nearby = getNearbyArtisans('electrician', userLat, userLon);
-```
-
-## Navigation Structure
-
-```
-Stack Navigator
-├── Home
-├── CategorySelection
-├── ArtisanList (params: category)
-├── ArtisanDetail (params: artisan)
-├── ArtisanRegistration
-└── ArtisanProfile
-```
-
-**Navigation Props**:
-- All screens receive `navigation` prop
-- Screens that need data receive `route` prop with params
-
-**Example Navigation**:
-```javascript
-navigation.navigate('ArtisanList', { category });
-navigation.navigate('ArtisanDetail', { artisan });
-```
-
-## Permissions
-
-### Location
-**Required for**: Finding nearby artisans
-
-```javascript
-let { status } = await Location.requestForegroundPermissionsAsync();
-```
-
-### Phone Calls
-**Required for**: Calling artisans directly
-
-```javascript
-Linking.openURL(`tel:${phoneNumber}`);
-```
-
-### Camera/Photos
-**Required for**: Profile and portfolio photo uploads (future feature)
-
-Configured in `app.json` with `expo-image-picker` plugin.
-
-## Styling
-
-All components use React Native's `StyleSheet.create()` for performance.
-
-**Color Scheme**:
-- Primary: `#FF6B35` (Orange)
-- Secondary: `#4ECDC4` (Teal)
-- Background: `#F5F5F5` (Light Gray)
-- Text: `#333` (Dark Gray)
-- Text Secondary: `#666` (Medium Gray)
-
-**Common Patterns**:
-- Cards: white background, border radius 12, elevation/shadow
-- Buttons: colored background, white text, bold font
-- Icons: Emoji characters for simplicity (no icon library needed)
-
-## Development Workflow
-
-### Initial Setup
-```bash
-npm install
-```
-
-### Start Development Server
 ```bash
 npm start
+# or: npm run android / npm run ios / npm run web
 ```
 
-### Run on Platforms
+### Backend API
+
 ```bash
-npm run android  # Android emulator or device
-npm run ios      # iOS simulator or device (macOS only)
-npm run web      # Web browser
+npm run dev:api
+# or, without file watching:
+npm run start:api
 ```
 
-### Testing on Physical Device
-1. Install Expo Go app from Play Store or App Store
-2. Run `npm start`
-3. Scan QR code with camera (iOS) or Expo Go (Android)
+The API listens on `0.0.0.0` and defaults to port `3000`. Check process health at:
 
-## Future Enhancements
+- `GET http://localhost:3000/health` — returns a small JSON health response.
+- `GET http://localhost:3000/` — API identity and status.
 
-### Backend Integration
-Replace `SAMPLE_ARTISANS` with API calls:
-```javascript
-const response = await fetch('https://api.workmangh.com/artisans?category=plumber');
-const artisans = await response.json();
-```
+The health route checks that the HTTP process is responding; it does not prove that PostgreSQL is reachable.
 
-### User Authentication
-Add login/signup screens and token management:
-- Firebase Auth
-- JWT tokens
-- Secure storage for credentials
+## Connecting a physical Android phone
 
-### Real-time Features
-- Push notifications for job requests
-- In-app messaging
-- Real-time availability updates
+A phone cannot normally reach the development computer through the phone's own `localhost` address.
 
-### Photo Upload
-Implement actual photo upload using `expo-image-picker`:
-```javascript
-const result = await ImagePicker.launchImageLibraryAsync({
-  mediaTypes: ImagePicker.MediaTypeOptions.Images,
-  allowsEditing: true,
-  aspect: [4, 3],
-  quality: 1,
-});
-```
+1. Connect the phone and computer to the same Wi-Fi network.
+2. Find the computer's private LAN IPv4 address (for example, `192.168.1.10`).
+3. Set `EXPO_PUBLIC_API_URL=http://192.168.1.10:3000` in `.env`.
+4. Restart Expo with a cleared cache: `npx expo start --clear`.
+5. Ensure the computer firewall allows inbound connections to the API port.
 
-### Reviews & Ratings
-- Review submission form
-- Star rating component
-- Review history
+For an Android emulator, use the host address supported by that emulator (Android Studio's standard emulator commonly uses `10.0.2.2`). For web on the same computer, `http://localhost:3000` is suitable.
 
-### Job Management
-- Job request system
-- Job history
-- Status tracking (pending, accepted, completed)
+All mobile screens should import the shared URL from `src/config/api.js`; do not hard-code a machine-specific IP in screen files.
 
-### Payment Integration
-- Mobile money integration (MTN, Vodafone Cash, AirtelTigo Money)
-- Payment history
-- Invoice generation
+## API routes currently wired in the canonical server
 
-## Common Issues
+- `POST /api/auth/signup`
+- `POST /api/auth/login`
+- `POST /api/artisans/register` (authenticated)
+- `PATCH /api/artisans/availability` (authenticated)
+- `GET /api/artisans/dashboard` (authenticated)
+- `GET /api/categories`
+- `GET /api/artisans?categoryId=<id>&available=true|false`
 
-### Location Permission Denied
-If location permission is denied, app falls back to default Accra coordinates (5.6037, -0.1870) for distance calculation.
+## Git workflow
 
-### Metro Bundler Issues
-Clear cache if you encounter bundling issues:
-```bash
-npm start -- --clear
-```
+- Create a branch for each issue.
+- Keep changes within the approved issue scope.
+- Include Prisma migrations when changing the database schema.
+- Run the relevant checks before opening a pull request.
+- Link the pull request to its issue and merge only after review.
 
-### Dependency Conflicts
-If dependencies fail to install:
-```bash
-rm -rf node_modules package-lock.json
-npm install
-```
+## Security notes
 
-## Code Style Guidelines
-
-- Use functional components with hooks
-- Use arrow functions for event handlers
-- Keep components focused and single-purpose
-- Extract reusable logic into custom hooks or utilities
-- Use meaningful variable and function names
-- Add comments for complex logic
-
-## Performance Considerations
-
-- Use `FlatList` instead of `ScrollView` for long lists (future optimization)
-- Optimize images (compress and use appropriate sizes)
-- Implement lazy loading for artisan profiles
-- Cache location data to avoid excessive GPS requests
-- Use React.memo for components that don't need frequent re-renders
-
-## Security Considerations
-
-- Never store sensitive data in plain text
-- Validate all user inputs
-- Sanitize phone numbers before calling
-- Use HTTPS for all API calls
-- Implement rate limiting for API requests
-- Validate location data before using
-
-## Testing
-
-Currently, the app includes a basic structure test (`test-app.js`). For production, implement:
-- Unit tests (Jest)
-- Component tests (React Native Testing Library)
-- Integration tests
-- E2E tests (Detox)
-
-## Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Test thoroughly
-5. Submit a pull request
-
-## Support
-
-For issues or questions, please open an issue on the GitHub repository.
-
----
-
-**Happy Coding! 🚀**
+- Never commit `.env`, database credentials, or production secrets.
+- Use HTTPS for deployed API traffic.
+- Use a strong, unique JWT secret in each environment.
+- Treat `EXPO_PUBLIC_*` values as public: they are bundled into the client application.
+- The current API uses permissive CORS for development. Restrict allowed origins before production deployment.
+- The current health endpoint is a liveness check, not a database readiness check.
